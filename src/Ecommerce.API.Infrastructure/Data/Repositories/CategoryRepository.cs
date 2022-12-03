@@ -2,11 +2,6 @@
 using Ecommerce.API.Domain.Repositories;
 using Ecommerce.API.Infrastructure.Data.Context;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Ecommerce.API.Infrastructure.Data.Repositories
 {
@@ -30,7 +25,7 @@ namespace Ecommerce.API.Infrastructure.Data.Repositories
         {
             return await _context.Categories.FindAsync(id);
         }
-        public async Task<List<Category>> GetByNameAsync(string name)
+        public async Task<List<Category>> FindByNameAsync(string name)
         {
             return await _context.Categories
                 .Where(category => category.Name.Contains(name))
