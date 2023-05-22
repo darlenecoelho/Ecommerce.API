@@ -20,10 +20,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Ecommerce.API.Domain\Ecommerce.API.Domain.csproj" />
     <ProjectReference Include="..\Ecommerce.API.Infrastructure\Ecommerce.API.Infrastructure.csproj" />
   </ItemGroup>

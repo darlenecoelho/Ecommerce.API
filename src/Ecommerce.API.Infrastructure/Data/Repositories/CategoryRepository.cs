@@ -1,5 +1,5 @@
 ﻿using Ecommerce.API.Domain.Entities;
-using Ecommerce.API.Domain.Interfaces.Repositories;
+using Ecommerce.API.Domain.Repositories.Interfaces;
 using Ecommerce.API.Infrastructure.Data.Context;
 using Microsoft.EntityFrameworkCore;
 

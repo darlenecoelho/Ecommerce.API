@@ -11,6 +11,7 @@ if (builder.Environment.IsDevelopment())
 // Configuração dos serviços
 builder.Services.AddEcommerceContext(builder.Configuration);
 builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();

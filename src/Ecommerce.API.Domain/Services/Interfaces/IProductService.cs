@@ -1,14 +1,12 @@
 ﻿using Ecommerce.API.Domain.Entities;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
-namespace Ecommerce.API.Domain.Interfaces.Repositories
+namespace Ecommerce.API.Domain.Services.Interfaces
 {
-    public interface IProductRepository
+    public interface IProductService
     {
         Task<List<Product>> GetAllProductsAsync();
         Task<Product> GetProductByIdAsync(int id);
-        Task<Product> AddProductAsync(Product product);
+        Task<Product> CreateProductAsync(Product product);
         Task<Product> UpdateProductAsync(Product product);
         Task DeleteProductAsync(Product product);
     }

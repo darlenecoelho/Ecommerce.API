@@ -1,6 +1,6 @@
 ﻿using Ecommerce.API.Domain.Entities;
 
-namespace Ecommerce.API.Domain.Interfaces.Repositories
+namespace Ecommerce.API.Domain.Repositories.Interfaces
 {
     public interface ISubcategoryRepository
     {
