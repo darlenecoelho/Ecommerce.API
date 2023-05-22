@@ -1,45 +1,47 @@
 ﻿using Ecommerce.API.Domain.Entities;
-using Ecommerce.API.Domain.Repositories;
+using Ecommerce.API.Domain.Interfaces.Repositories;
 using Ecommerce.API.Infrastructure.Data.Context;
 using Microsoft.EntityFrameworkCore;
 
 namespace Ecommerce.API.Infrastructure.Data.Repositories
 {
-    public class CategoryRepository : BaseRepository, ICategoryRepository
+    public class CategoryRepository : ICategoryRepository
     {
-        public CategoryRepository(EcommerceContext context) : base(context) { }
+        private readonly EcommerceContext _context;
 
-        public async Task<IEnumerable<Category>> ListAsync()
+        public CategoryRepository(EcommerceContext context)
         {
-            return await _context.Categories
-                                 .AsNoTracking()
-                                 .ToListAsync();
+            _context = context;
         }
 
-        public async Task AddAsync(Category category)
+        public async Task<List<Category>> GetAllCategoriesAsync()
         {
-            await _context.Categories.AddAsync(category);
+            return await _context.Categories.ToListAsync();
         }
 
-        public async Task<Category> FindByIdAsync(int? id)
+        public async Task<Category> GetCategoryByIdAsync(int id)
         {
             return await _context.Categories.FindAsync(id);
         }
-        public async Task<List<Category>> FindByNameAsync(string name)
+
+        public async Task<Category> AddCategoryAsync(Category category)
         {
-            return await _context.Categories
-                .Where(category => category.Name.Contains(name))
-                .OrderBy(category => category.Name)
-                .ToListAsync();
-        }
-        public void Update(Category category)
-        {
-            _context.Categories.Update(category);
+            _context.Categories.Add(category);
+            await _context.SaveChangesAsync();
+            return category;
         }
 
-        public void Remove(Category category)
+        public async Task<Category> UpdateCategoryAsync(Category category)
+        {
+            _context.Categories.Update(category);
+            await _context.SaveChangesAsync();
+            return category;
+        }
+
+        public async Task DeleteCategoryAsync(Category category)
         {
             _context.Categories.Remove(category);
+            await _context.SaveChangesAsync();
         }
     }
 }

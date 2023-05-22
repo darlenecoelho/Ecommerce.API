@@ -1,47 +1,47 @@
 ﻿using Ecommerce.API.Domain.Entities;
-using Ecommerce.API.Domain.Repositories;
+using Ecommerce.API.Domain.Interfaces.Repositories;
 using Ecommerce.API.Infrastructure.Data.Context;
 using Microsoft.EntityFrameworkCore;
 
 namespace Ecommerce.API.Infrastructure.Data.Repositories
 {
-    public class SubcategoryRepository : BaseRepository, ISubcategoryRepository
+    public class SubcategoryRepository : ISubcategoryRepository
     {
-        public SubcategoryRepository(EcommerceContext context) : base(context) { }
+        private readonly EcommerceContext _context;
 
-        public async Task<IEnumerable<Subcategory>> ListAsync()
+        public SubcategoryRepository(EcommerceContext context)
         {
-            return await _context.Subcategories
-                                 .AsNoTracking()
-                                 .ToListAsync();
-        }
-        public async Task<Subcategory> FindByIdAsync(int? id)
-        {
-            return await _context.Subcategories
-                                 .Include(p => p.Category)
-                                 .FirstOrDefaultAsync(p => p.Id == id);
-        }
-        public async Task<List<Subcategory>> FindByNameAsync(string name)
-        {
-            return await _context.Subcategories
-                .Where(subcategory => subcategory.Name.Contains(name))
-                .OrderBy(subcategory => subcategory.Name)
-                .ToListAsync();
+            _context = context;
         }
 
-        public async Task AddAsync(Subcategory subcategory)
+        public async Task<List<Subcategory>> GetAllSubcategoriesAsync()
         {
-            await _context.Subcategories.AddAsync(subcategory);
+            return await _context.Subcategories.ToListAsync();
         }
 
-        public void Update(Subcategory subcategory)
+        public async Task<Subcategory> GetSubcategoryByIdAsync(int id)
+        {
+            return await _context.Subcategories.FindAsync(id);
+        }
+
+        public async Task<Subcategory> AddSubcategoryAsync(Subcategory subcategory)
+        {
+            _context.Subcategories.Add(subcategory);
+            await _context.SaveChangesAsync();
+            return subcategory;
+        }
+
+        public async Task<Subcategory> UpdateSubcategoryAsync(Subcategory subcategory)
         {
             _context.Subcategories.Update(subcategory);
+            await _context.SaveChangesAsync();
+            return subcategory;
         }
 
-        public void Remove(Subcategory subcategory)
+        public async Task DeleteSubcategoryAsync(Subcategory subcategory)
         {
             _context.Subcategories.Remove(subcategory);
+            await _context.SaveChangesAsync();
         }
     }
 }

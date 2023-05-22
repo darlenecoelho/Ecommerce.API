@@ -4,12 +4,16 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 17.4.33103.184
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ecommerce.API", "Ecommerce.API.csproj", "{3E73323B-9460-41F9-812C-AD8D7EBC02F0}"
+	ProjectSection(ProjectDependencies) = postProject
+		{35CC197A-6225-44B4-9041-6A489B2EF53C} = {35CC197A-6225-44B4-9041-6A489B2EF53C}
+		{9F061562-0A27-459D-902D-FAC0994BEC08} = {9F061562-0A27-459D-902D-FAC0994BEC08}
+	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ecommerce.API.Application", "..\Ecommerce.API.Application\Ecommerce.API.Application.csproj", "{9F061562-0A27-459D-902D-FAC0994BEC08}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ecommerce.API.Application", "..\Ecommerce.API.Application\Ecommerce.API.Application.csproj", "{9F061562-0A27-459D-902D-FAC0994BEC08}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ecommerce.API.Domain", "..\Ecommerce.API.Domain\Ecommerce.API.Domain.csproj", "{35CC197A-6225-44B4-9041-6A489B2EF53C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ecommerce.API.Domain", "..\Ecommerce.API.Domain\Ecommerce.API.Domain.csproj", "{35CC197A-6225-44B4-9041-6A489B2EF53C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ecommerce.API.Infrastructure", "..\Ecommerce.API.Infrastructure\Ecommerce.API.Infrastructure.csproj", "{B7FDBA59-5B0C-4194-9297-572BE82F5664}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ecommerce.API.Infrastructure", "..\Ecommerce.API.Infrastructure\Ecommerce.API.Infrastructure.csproj", "{B7FDBA59-5B0C-4194-9297-572BE82F5664}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

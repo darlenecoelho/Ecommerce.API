@@ -1,25 +1,22 @@
 ﻿using Ecommerce.API.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
-using System.Reflection;
+using MySql.Data.EntityFrameworkCore;
 
-namespace Ecommerce.API.Infrastructure.Data.Context
+namespace Ecommerce.API.Infrastructure.Data.Context;
+
+public class EcommerceContext : DbContext
 {
-    public class EcommerceContext : DbContext
+    public EcommerceContext(DbContextOptions<EcommerceContext> options) : base(options)
     {
-        public EcommerceContext(DbContextOptions<EcommerceContext> dbOptions) : base(dbOptions)
-        {
-            ChangeTracker.LazyLoadingEnabled = false;
-        }
+    }
 
-        public DbSet<Category> Categories => Set<Category>();
-        public DbSet<Subcategory> Subcategories => Set<Subcategory>();
-        public DbSet<Product> Products => Set<Product>();
+    public DbSet<Category> Categories { get; set; }
+    public DbSet<Subcategory> Subcategories { get; set; }
+    public DbSet<Product> Products { get; set; }
 
-        protected override void OnModelCreating(ModelBuilder builder)
-        {
-            base.OnModelCreating(builder);
-            builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
-        }
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(EcommerceContext).Assembly);
+        base.OnModelCreating(modelBuilder);
     }
 }

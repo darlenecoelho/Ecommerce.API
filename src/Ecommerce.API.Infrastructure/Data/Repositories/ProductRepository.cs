@@ -1,46 +1,53 @@
 ﻿using Ecommerce.API.Domain.Entities;
-using Ecommerce.API.Domain.Repositories;
+using Ecommerce.API.Domain.Interfaces.Repositories;
 using Ecommerce.API.Infrastructure.Data.Context;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Ecommerce.API.Infrastructure.Data.Repositories
 {
-    public class ProductRepository : BaseRepository, IProductRepository
+    public class ProductRepository : IProductRepository
     {
-        public ProductRepository(EcommerceContext context) : base(context) { }
+        private readonly EcommerceContext _context;
 
-        public async Task<IEnumerable<Product>> ListAsync()
+        public ProductRepository(EcommerceContext context)
+        {
+            _context = context;
+        }
+
+        public async Task<List<Product>> GetAllProductsAsync()
+        {
+            return await _context.Products.ToListAsync();
+        }
+
+        public async Task<Product> GetProductByIdAsync(int id)
         {
             return await _context.Products
-                                 .AsNoTracking()
-                                 .ToListAsync();
+                .Include(p => p.Category)
+                .Include(p => p.Subcategory)
+                .FirstOrDefaultAsync(p => p.Id == id);
         }
 
-        public async Task<Product> FindByIdAsync(int? id)
+
+        public async Task<Product> AddProductAsync(Product product)
         {
-            return await _context.Products
-                                 .Include(p => p.Category)
-                                 .Include(p => p.Subcategory)
-                                 .FirstOrDefaultAsync(p => p.Id == id);
-        }
-        public async Task<List<Product>> FindByNameAsync(string name)
-        {
-            return await _context.Products.Where(product => product.Name.Contains(name)).OrderBy(product => product.Name).ToListAsync();
+            _context.Products.Add(product);
+            await _context.SaveChangesAsync();
+            return product;
         }
 
-        public async Task AddAsync(Product product)
-        {
-            await _context.Products.AddAsync(product);
-        }
-
-        public void Update(Product product)
+        public async Task<Product> UpdateProductAsync(Product product)
         {
             _context.Products.Update(product);
+            await _context.SaveChangesAsync();
+            return product;
         }
 
-        public void Remove(Product product)
+        public async Task DeleteProductAsync(Product product)
         {
             _context.Products.Remove(product);
+            await _context.SaveChangesAsync();
         }
     }
 }
