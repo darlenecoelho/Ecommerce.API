@@ -1,8 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Ecommerce.API.Domain.Entities;
+﻿using Ecommerce.API.Domain.Entities;
 using Ecommerce.API.Domain.Services.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Ecommerce.API.Controllers;
 

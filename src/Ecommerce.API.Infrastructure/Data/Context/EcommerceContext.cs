@@ -1,6 +1,5 @@
 ﻿using Ecommerce.API.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
-using MySql.Data.EntityFrameworkCore;
 
 namespace Ecommerce.API.Infrastructure.Data.Context;
 
