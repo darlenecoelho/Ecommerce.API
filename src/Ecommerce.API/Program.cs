@@ -16,19 +16,14 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Configuração do pipeline de requisições HTTP
+// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseDeveloperExceptionPage();
     app.UseSwagger();
-    app.UseSwaggerUI(c =>
-    {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Ecommerce API");
-        c.RoutePrefix = string.Empty;
-    });
+    app.UseSwaggerUI();
 }
 
-app.UseRouting();
+app.UseHttpsRedirection();
 
 app.UseAuthorization();
 

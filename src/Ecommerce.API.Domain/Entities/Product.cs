@@ -1,5 +1,5 @@
 ﻿namespace Ecommerce.API.Domain.Entities;
-{
+
     public class Product
     {
         public int Id { get; set; }
@@ -15,4 +15,4 @@
         public Subcategory Subcategory { get; set; }
         public int SubcategoryId { get; set; }
     }
-}
+
