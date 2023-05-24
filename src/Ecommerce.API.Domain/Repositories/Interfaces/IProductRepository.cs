@@ -8,4 +8,5 @@ public interface IProductRepository
     Task<Product> AddProductAsync(Product product);
     Task<Product> UpdateProductAsync(Product product);
     Task DeleteProductAsync(Product product);
+    Task<Product> GetProductByNameAsync(string product);
 }

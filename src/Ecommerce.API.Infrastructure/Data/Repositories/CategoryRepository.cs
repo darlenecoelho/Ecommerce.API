@@ -43,5 +43,10 @@ namespace Ecommerce.API.Infrastructure.Data.Repositories
             _context.Categories.Remove(category);
             await _context.SaveChangesAsync();
         }
+
+        public async Task<Category> GetCategoryByNameAsync(string category) 
+        {
+            return await _context.Categories.FirstOrDefaultAsync(c => c.Name == category); 
+        }
     }
 }

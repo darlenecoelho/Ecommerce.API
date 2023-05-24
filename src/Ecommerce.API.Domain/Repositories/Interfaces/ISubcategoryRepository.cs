@@ -8,4 +8,5 @@ public interface ISubcategoryRepository
     Task<Subcategory> AddSubcategoryAsync(Subcategory subcategory);
     Task<Subcategory> UpdateSubcategoryAsync(Subcategory subcategory);
     Task DeleteSubcategoryAsync(Subcategory subcategory);
+    Task<Subcategory> GetSubcategorytByNameAsync(string subcategory);
 }
