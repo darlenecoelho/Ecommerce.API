@@ -9,5 +9,6 @@
         public int Stock { get; set; }
         public int CategoryId { get; set; }
         public int SubcategoryId { get; set; }
+        public DateTime LastUpdate { get; set; }
     }
 }

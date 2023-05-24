@@ -1,4 +1,5 @@
 ﻿using Ecommerce.API.Application.Interfaces;
+using Ecommerce.API.Application.Mappings;
 using Ecommerce.API.Application.Services;
 using Ecommerce.API.Domain.Repositories.Interfaces;
 using Ecommerce.API.Infrastructure.Data.Context;
@@ -6,6 +7,7 @@ using Ecommerce.API.Infrastructure.Data.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using AutoMapper;
 
 namespace Ecommerce.API.Infrastructure.IoC
 {
@@ -26,6 +28,9 @@ namespace Ecommerce.API.Infrastructure.IoC
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<ISubcategoryService, SubcategoryService>();
             services.AddScoped<IProductService, ProductService>();
+
+            // Add AutoMapper
+            services.AddAutoMapper(typeof(CategoryMappingProfile), typeof(SubcategoryMappingProfile), typeof(ProductMappingProfile));
         }
     }
 }

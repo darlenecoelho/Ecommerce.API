@@ -10,7 +10,6 @@ public class ReadSubcategoryDTO
     public DateTime LastUpdate { get; set; }
     public bool Status { get; set; }
     public int CategoryId { get; set; }
-    public ReadCategoryDTO Category { get; set; }
     public IList<ReadProductDTO> Products { get; set; } = new List<ReadProductDTO>();
 
 }
