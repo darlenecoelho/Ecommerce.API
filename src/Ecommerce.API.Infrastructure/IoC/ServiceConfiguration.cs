@@ -1,6 +1,6 @@
-﻿using Ecommerce.API.Application.Services;
+﻿using Ecommerce.API.Application.Interfaces;
+using Ecommerce.API.Application.Services;
 using Ecommerce.API.Domain.Repositories.Interfaces;
-using Ecommerce.API.Domain.Services.Interfaces;
 using Ecommerce.API.Infrastructure.Data.Context;
 using Ecommerce.API.Infrastructure.Data.Repositories;
 using Microsoft.EntityFrameworkCore;

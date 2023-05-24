@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
-using Ecommerce.API.Application.DTOs;
+using Ecommerce.API.Application.DTOs.Product;
 using Ecommerce.API.Domain.Entities;
 
-namespace Ecommerce.API.Application.MappingProfiles;
+namespace Ecommerce.API.Application.Mappings;
 public class ProductMappingProfile : Profile
 {
     public ProductMappingProfile()
@@ -14,5 +14,7 @@ public class ProductMappingProfile : Profile
         CreateMap<CreateProductDTO, Product>()
             .ForMember(dest => dest.CategoryId, opt => opt.MapFrom(src => src.CategoryId))
             .ForMember(dest => dest.SubcategoryId, opt => opt.MapFrom(src => src.SubcategoryId));
+
+        CreateMap<UpdateProductDTO, Product>().ReverseMap();
     }
 }

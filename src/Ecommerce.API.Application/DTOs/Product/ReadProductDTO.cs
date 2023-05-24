@@ -1,4 +1,7 @@
-﻿namespace Ecommerce.API.Application.DTOs;
+﻿using Ecommerce.API.Application.DTOs.Category;
+using Ecommerce.API.Application.DTOs.Subcategory;
+
+namespace Ecommerce.API.Application.DTOs.Product;
 public class ReadProductDTO
 {
     public int Id { get; set; }

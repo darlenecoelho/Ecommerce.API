@@ -1,6 +1,7 @@
-﻿using Ecommerce.API.Domain.Entities;
+﻿using Ecommerce.API.Application.DTOs.Category;
+using Ecommerce.API.Application.DTOs.Product;
 
-namespace Ecommerce.API.Application.DTOs;
+namespace Ecommerce.API.Application.DTOs.Subcategory;
 public class ReadSubcategoryDTO
 {
     public int Id { get; set; }
@@ -10,6 +11,6 @@ public class ReadSubcategoryDTO
     public bool Status { get; set; }
     public int CategoryId { get; set; }
     public ReadCategoryDTO Category { get; set; }
-    public IList<Product> Products { get; set; } = new List<Product>();
+    public IList<ReadProductDTO> Products { get; set; } = new List<ReadProductDTO>();
 
 }

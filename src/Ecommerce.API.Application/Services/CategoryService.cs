@@ -1,39 +1,77 @@
-﻿using Ecommerce.API.Domain.Entities;
+﻿using AutoMapper;
+using Ecommerce.API.Application.DTOs.Category;
+using Ecommerce.API.Application.Interfaces;
+using Ecommerce.API.Domain.Entities;
 using Ecommerce.API.Domain.Repositories.Interfaces;
-using Ecommerce.API.Domain.Services.Interfaces;
 
-namespace Ecommerce.API.Application.Services;
-public class CategoryService : ICategoryService
+namespace Ecommerce.API.Application.Services
 {
-    private readonly ICategoryRepository _categoryRepository;
-
-    public CategoryService(ICategoryRepository categoryRepository)
+    public class CategoryService : ICategoryService
     {
-        _categoryRepository = categoryRepository;
-    }
+        private readonly IMapper _mapper;
+        private readonly ICategoryRepository _categoryRepository;
 
-    public async Task<List<Category>> GetAllCategoriesAsync()
-    {
-        return await _categoryRepository.GetAllCategoriesAsync();
-    }
+        public CategoryService(IMapper mapper, ICategoryRepository categoryRepository)
+        {
+            _mapper = mapper;
+            _categoryRepository = categoryRepository;
+        }
 
-    public async Task<Category> GetCategoryByIdAsync(int id)
-    {
-        return await _categoryRepository.GetCategoryByIdAsync(id);
-    }
+        public async Task<List<ReadCategoryDTO>> GetAllCategoriesAsync()
+        {
+            var categories = await _categoryRepository.GetAllCategoriesAsync();
+            return _mapper.Map<List<ReadCategoryDTO>>(categories);
+        }
 
-    public async Task<Category> CreateCategoryAsync(Category category)
-    {
-        return await _categoryRepository.AddCategoryAsync(category);
-    }
+        public async Task<ReadCategoryDTO> GetCategoryByIdAsync(int id)
+        {
+            var category = await _categoryRepository.GetCategoryByIdAsync(id);
+            return _mapper.Map<ReadCategoryDTO>(category);
+        }
 
-    public async Task<Category> UpdateCategoryAsync(Category category)
-    {
-        return await _categoryRepository.UpdateCategoryAsync(category);
-    }
+        public async Task<ReadCategoryDTO> CreateCategoryAsync(CreateCategoryDTO category)
+        {
+            if (await _categoryRepository.GetCategoryByNameAsync(category.Name) != null)
+            {
+                throw new InvalidOperationException("Categoria já cadastrada. Por favor, altere o nome da categoria.");
+            }
 
-    public async Task DeleteCategoryAsync(Category category)
-    {
-        await _categoryRepository.DeleteCategoryAsync(category);
+            var newCategory = _mapper.Map<Category>(category);
+            var createdCategory = await _categoryRepository.AddCategoryAsync(newCategory);
+
+            return _mapper.Map<ReadCategoryDTO>(createdCategory);
+        }
+
+        public async Task<ReadCategoryDTO> UpdateCategoryAsync(UpdateCategoryDTO category)
+        {
+            var existingCategory = await _categoryRepository.GetCategoryByIdAsync(category.Id);
+            if (existingCategory == null)
+            {
+                throw new Exception("Categoria não encontrada.");
+            }
+
+            if (await _categoryRepository.GetCategoryByNameAsync(category.Name) != null && existingCategory.Name != category.Name)
+            {
+                throw new InvalidOperationException("Categoria já cadastrada. Por favor, altere o nome da categoria.");
+            }
+
+            existingCategory.Name = category.Name;
+            existingCategory.LastUpdate = DateTime.UtcNow;
+
+            var updatedCategory = await _categoryRepository.UpdateCategoryAsync(existingCategory);
+
+            return _mapper.Map<ReadCategoryDTO>(updatedCategory);
+        }
+
+        public async Task DeleteCategoryAsync(int id)
+        {
+            var existingCategory = await _categoryRepository.GetCategoryByIdAsync(id);
+            if (existingCategory == null)
+            {
+                throw new Exception("Categoria não encontrada.");
+            }
+
+            await _categoryRepository.DeleteCategoryAsync(existingCategory);
+        }
     }
 }
