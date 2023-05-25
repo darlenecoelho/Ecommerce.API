@@ -9,11 +9,15 @@ namespace Ecommerce.API.Application.Interfaces
     {
         private readonly IProductRepository _productRepository;
         private readonly IMapper _mapper;
+        private readonly ICategoryService _categoryService;
+        private readonly ISubcategoryService _subcategoryService;
 
-        public ProductService(IProductRepository productRepository, IMapper mapper)
+        public ProductService(IProductRepository productRepository, IMapper mapper, ICategoryService categoryService, ISubcategoryService subcategoryService)
         {
             _productRepository = productRepository;
             _mapper = mapper;
+            _categoryService = categoryService;
+            _subcategoryService = subcategoryService;
         }
 
         public async Task<List<ReadProductDTO>> GetAllProductsAsync()
@@ -33,7 +37,19 @@ namespace Ecommerce.API.Application.Interfaces
             var existingProduct = await _productRepository.GetProductByNameAsync(product.Name);
             if (existingProduct != null)
             {
-                throw new Exception("O produto já foi cadastrado. Por favor, informe um nome diferente.");
+                throw new Exception("O produto já foi cadastrado. Informe um nome diferente.");
+            }
+
+            var category = await _categoryService.GetCategoryByIdAsync(product.CategoryId);
+            if (category == null || !category.Status)
+            {
+                throw new Exception("Não é possível cadastrar um produto em uma categoria inativa.");
+            }
+
+            var subcategory = await _subcategoryService.GetSubcategoryByIdAsync(product.SubcategoryId);
+            if (subcategory == null || !subcategory.Status)
+            {
+                throw new Exception("Não é possível cadastrar um produto em uma subcategoria inativa.");
             }
 
             var newProduct = _mapper.Map<Product>(product);
@@ -43,23 +59,22 @@ namespace Ecommerce.API.Application.Interfaces
 
         public async Task<ReadProductDTO> UpdateProductAsync(UpdateProductDTO product)
         {
-            var existingProduct = await _productRepository.GetProductByNameAsync(product.Name);
-            if (existingProduct != null && existingProduct.Id != product.Id)
+            var createdProduct = await CreateProductAsync(new CreateProductDTO
             {
-                throw new Exception("O produto já foi cadastrado com esse nome. Por favor, informe um nome diferente.");
+                Name = product.Name,
+                Description = product.Description,
+                Price = product.Price,
+                Stock = product.Stock,
+                CategoryId = product.CategoryId,
+                SubcategoryId = product.SubcategoryId
+            });
+
+            if (createdProduct.Id != product.Id)
+            {
+                throw new Exception("O ID do produto não corresponde ao ID fornecido.");
             }
 
-            var updatedProduct = await _productRepository.GetProductByIdAsync(product.Id);
-            if (updatedProduct == null)
-            {
-                throw new Exception("Produto não encontrado.");
-            }
-
-            _mapper.Map(product, updatedProduct);
-            updatedProduct.LastUpdate = DateTime.UtcNow;
-
-            await _productRepository.UpdateProductAsync(updatedProduct);
-            return _mapper.Map<ReadProductDTO>(updatedProduct);
+            return createdProduct;
         }
 
         public async Task DeleteProductAsync(int id)

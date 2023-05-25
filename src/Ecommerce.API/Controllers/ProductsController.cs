@@ -1,49 +1,67 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using AutoMapper;
 using Ecommerce.API.Application.DTOs.Product;
 using Ecommerce.API.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Ecommerce.API.Controllers
 {
-    [Route("api/products")]
     [ApiController]
-    public class ProductsController : ControllerBase
+    [Route("api/products")]
+    public class ProductController : ControllerBase
     {
         private readonly IProductService _productService;
+        private readonly IMapper _mapper;
 
-        public ProductsController(IProductService productService)
+        public ProductController(IProductService productService, IMapper mapper)
         {
-            _productService = productService;
+            _productService = productService ?? throw new ArgumentNullException(nameof(productService));
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
+        /// <summary>
+        /// Lista todos os produtos.
+        /// </summary>
         [HttpGet]
-        public async Task<ActionResult<List<ReadProductDTO>>> GetAllProducts()
+        [ProducesResponseType(typeof(List<ReadProductDTO>), 200)]
+        public async Task<IActionResult> GetAllProductsAsync()
         {
             var products = await _productService.GetAllProductsAsync();
             return Ok(products);
         }
 
+        /// <summary>
+        /// Obtém um produto pelo seu ID.
+        /// </summary>
+        /// <param name="id">ID do produto.</param>
         [HttpGet("{id}")]
-        public async Task<ActionResult<ReadProductDTO>> GetProductById(int id)
+        [ProducesResponseType(typeof(ReadProductDTO), 200)]
+        [ProducesResponseType(typeof(string), 404)]
+        public async Task<IActionResult> GetProductByIdAsync(int id)
         {
-            var product = await _productService.GetProductByIdAsync(id);
-            if (product == null)
+            try
             {
-                return NotFound();
+                var product = await _productService.GetProductByIdAsync(id);
+                return Ok(product);
             }
-
-            return Ok(product);
+            catch (Exception)
+            {
+                return NotFound("Produto não encontrado");
+            }
         }
 
+        /// <summary>
+        /// Cria um novo produto.
+        /// </summary>
+        /// <param name="product">Dados do produto a ser criado.</param>
         [HttpPost]
-        public async Task<ActionResult<ReadProductDTO>> CreateProduct([FromBody] CreateProductDTO product)
+        [ProducesResponseType(typeof(ReadProductDTO), 201)]
+        [ProducesResponseType(typeof(string), 400)]
+        public async Task<IActionResult> CreateProductAsync(CreateProductDTO product)
         {
             try
             {
                 var createdProduct = await _productService.CreateProductAsync(product);
-                return CreatedAtAction(nameof(GetProductById), new { id = createdProduct.Id }, createdProduct);
+                return CreatedAtAction(nameof(GetProductByIdAsync), new { id = createdProduct.Id }, createdProduct);
             }
             catch (Exception ex)
             {
@@ -51,27 +69,41 @@ namespace Ecommerce.API.Controllers
             }
         }
 
+        /// <summary>
+        /// Atualiza um produto existente.
+        /// </summary>
+        /// <param name="id">ID do produto a ser atualizado.</param>
+        /// <param name="product">Dados do produto atualizado.</param>
         [HttpPut("{id}")]
-        public async Task<ActionResult<ReadProductDTO>> UpdateProduct(int id, [FromBody] UpdateProductDTO product)
+        [ProducesResponseType(typeof(ReadProductDTO), 200)]
+        [ProducesResponseType(typeof(string), 400)]
+        [ProducesResponseType(typeof(string), 404)]
+        public async Task<IActionResult> UpdateProductAsync(int id, [FromBody] UpdateProductDTO product)
         {
-            if (id != product.Id)
-            {
-                return BadRequest("The product ID provided does not match the updated product ID.");
-            }
-
             try
             {
+                if (id != product.Id)
+                {
+                    return BadRequest("O ID do produto na URL deve corresponder ao ID fornecido no corpo da requisição.");
+                }
+
                 var updatedProduct = await _productService.UpdateProductAsync(product);
                 return Ok(updatedProduct);
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return NotFound(ex.Message);
             }
         }
 
+        /// <summary>
+        /// Exclui um produto pelo seu ID.
+        /// </summary>
+        /// <param name="id">ID do produto a ser excluído.</param>
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteProduct(int id)
+        [ProducesResponseType(204)]
+        [ProducesResponseType(typeof(string), 404)]
+        public async Task<IActionResult> DeleteProductAsync(int id)
         {
             try
             {
@@ -80,7 +112,7 @@ namespace Ecommerce.API.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return NotFound(ex.Message);
             }
         }
     }
