@@ -1,6 +1,8 @@
 ﻿using Ecommerce.API.Application.Mappings;
 using Ecommerce.API.Extensions;
 using Ecommerce.API.Infrastructure.IoC;
+using Microsoft.Extensions.Options;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,7 +16,12 @@ if (builder.Environment.IsDevelopment())
 builder.Services.AddEcommerceContext(builder.Configuration);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    c.IncludeXmlComments(xmlPath);
+});
 builder.Services.AddServices(builder.Configuration);
 var app = builder.Build();
 
