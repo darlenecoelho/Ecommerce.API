@@ -1,7 +1,5 @@
-﻿using Ecommerce.API.Application.Mappings;
-using Ecommerce.API.Extensions;
+﻿using Ecommerce.API.Extensions;
 using Ecommerce.API.Infrastructure.IoC;
-using Microsoft.Extensions.Options;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);

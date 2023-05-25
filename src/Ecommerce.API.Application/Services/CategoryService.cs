@@ -13,8 +13,8 @@ namespace Ecommerce.API.Application.Services
 
         public CategoryService(IMapper mapper, ICategoryRepository categoryRepository)
         {
-            _mapper = mapper;
-            _categoryRepository = categoryRepository;
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+            _categoryRepository = categoryRepository ?? throw new ArgumentNullException(nameof(categoryRepository));
         }
 
         public async Task<List<ReadCategoryDTO>> GetAllCategoriesAsync()
@@ -26,6 +26,11 @@ namespace Ecommerce.API.Application.Services
         public async Task<ReadCategoryDTO> GetCategoryByIdAsync(int id)
         {
             var category = await _categoryRepository.GetCategoryByIdAsync(id);
+            if (category == null)
+            {
+                throw new Exception("Categoria não encontrada. Verifique o id informado");
+            }
+
             return _mapper.Map<ReadCategoryDTO>(category);
         }
 
@@ -47,7 +52,7 @@ namespace Ecommerce.API.Application.Services
             var existingCategory = await _categoryRepository.GetCategoryByIdAsync(category.Id);
             if (existingCategory == null)
             {
-                throw new Exception("Categoria não encontrada.");
+                throw new Exception("Categoria não encontrada. Verifique o id informado");
             }
 
             if (await _categoryRepository.GetCategoryByNameAsync(category.Name) != null && existingCategory.Name != category.Name)
@@ -68,7 +73,7 @@ namespace Ecommerce.API.Application.Services
             var existingCategory = await _categoryRepository.GetCategoryByIdAsync(id);
             if (existingCategory == null)
             {
-                throw new Exception("Categoria não encontrada.");
+                throw new Exception("Categoria não encontrada. Verifique o id informado");
             }
 
             await _categoryRepository.DeleteCategoryAsync(existingCategory);

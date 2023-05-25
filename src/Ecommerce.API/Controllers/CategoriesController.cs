@@ -2,9 +2,6 @@
 using Ecommerce.API.Application.DTOs.Category;
 using Ecommerce.API.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace Ecommerce.API.Controllers
 {
@@ -22,21 +19,24 @@ namespace Ecommerce.API.Controllers
         }
 
         /// <summary>
-        /// Recupera todas as categorias.
+        /// Lista todas as categorias.
         /// </summary>
         [HttpGet]
-        public async Task<ActionResult<List<ReadCategoryDTO>>> GetAllCategories()
+        [ProducesResponseType(typeof(List<ReadCategoryDTO>), 200)]
+        public async Task<ActionResult<List<ReadCategoryDTO>>> GetAllCategoriesAsync()
         {
             var categories = await _categoryService.GetAllCategoriesAsync();
             return Ok(categories);
         }
 
         /// <summary>
-        /// Recupera uma categoria pelo seu ID.
+        /// Obtém uma categoria pelo seu ID.
         /// </summary>
         /// <param name="id">O ID da categoria.</param>
         [HttpGet("{id}")]
-        public async Task<ActionResult<ReadCategoryDTO>> GetCategoryById(int id)
+        [ProducesResponseType(typeof(ReadCategoryDTO), 200)]
+        [ProducesResponseType(typeof(string), 404)]
+        public async Task<ActionResult<ReadCategoryDTO>> GetCategoryByIdAsync(int id)
         {
             try
             {
@@ -54,12 +54,14 @@ namespace Ecommerce.API.Controllers
         /// </summary>
         /// <param name="category">A categoria a ser criada.</param>
         [HttpPost]
-        public async Task<ActionResult<ReadCategoryDTO>> CreateCategory([FromBody] CreateCategoryDTO category)
+        [ProducesResponseType(typeof(ReadCategoryDTO), 201)]
+        [ProducesResponseType(typeof(string), 400)]
+        public async Task<ActionResult<ReadCategoryDTO>> CreateCategoryAsync([FromBody] CreateCategoryDTO category)
         {
             try
             {
                 var createdCategory = await _categoryService.CreateCategoryAsync(category);
-                return CreatedAtAction(nameof(GetCategoryById), new { id = createdCategory.Id }, createdCategory);
+                return CreatedAtAction(nameof(GetCategoryByIdAsync), new { id = createdCategory.Id }, createdCategory);
             }
             catch (InvalidOperationException ex)
             {
@@ -73,7 +75,10 @@ namespace Ecommerce.API.Controllers
         /// <param name="id">O ID da categoria a ser atualizada.</param>
         /// <param name="category">Os dados atualizados da categoria.</param>
         [HttpPut("{id}")]
-        public async Task<ActionResult<ReadCategoryDTO>> UpdateCategory(int id, [FromBody] UpdateCategoryDTO category)
+        [ProducesResponseType(typeof(ReadCategoryDTO), 200)]
+        [ProducesResponseType(typeof(string), 400)]
+        [ProducesResponseType(typeof(string), 404)]
+        public async Task<ActionResult<ReadCategoryDTO>> UpdateCategoryAsync(int id, [FromBody] UpdateCategoryDTO category)
         {
             try
             {
@@ -96,7 +101,9 @@ namespace Ecommerce.API.Controllers
         /// </summary>
         /// <param name="id">O ID da categoria a ser excluída.</param>
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteCategory(int id)
+        [ProducesResponseType(204)]
+        [ProducesResponseType(typeof(string), 404)]
+        public async Task<IActionResult> DeleteCategoryAsync(int id)
         {
             try
             {
