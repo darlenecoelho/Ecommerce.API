@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Ecommerce.API.Application.DTOs.Category;
 using Ecommerce.API.Application.DTOs.Product;
 using Ecommerce.API.Domain.Entities;
 using Ecommerce.API.Domain.Repositories.Interfaces;
@@ -29,6 +30,11 @@ namespace Ecommerce.API.Application.Interfaces
         public async Task<ReadProductDTO> GetProductByIdAsync(int id)
         {
             var product = await _productRepository.GetProductByIdAsync(id);
+            if (product == null)
+            {
+                throw new Exception("Produto não encontrado. Verifique o id informado");
+            }
+
             return _mapper.Map<ReadProductDTO>(product);
         }
 

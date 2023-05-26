@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Ecommerce.API.Application.DTOs.Category;
 using Ecommerce.API.Application.DTOs.Subcategory;
 using Ecommerce.API.Application.Interfaces;
 using Ecommerce.API.Domain.Entities;
@@ -28,6 +29,11 @@ namespace Ecommerce.API.Application.Services
         public async Task<ReadSubcategoryDTO> GetSubcategoryByIdAsync(int id)
         {
             var subcategory = await _subcategoryRepository.GetSubcategoryByIdAsync(id);
+            if (subcategory == null)
+            {
+                throw new Exception("Subcategoria não encontrada. Verifique o id informado");
+            }
+
             return _mapper.Map<ReadSubcategoryDTO>(subcategory);
         }
 

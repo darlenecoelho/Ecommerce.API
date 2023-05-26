@@ -63,7 +63,7 @@ namespace Ecommerce.API.Controllers
                 var createdCategory = await _categoryService.CreateCategoryAsync(category);
                 return CreatedAtAction(nameof(GetCategoryByIdAsync), new { id = createdCategory.Id }, createdCategory);
             }
-            catch (InvalidOperationException ex)
+            catch (InvalidOperationException)
             {
                 return BadRequest("Categoria já cadastrada. Por favor, altere o nome da categoria.");
             }

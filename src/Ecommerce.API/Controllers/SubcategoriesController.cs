@@ -58,13 +58,16 @@ namespace Ecommerce.API.Controllers
         /// <param name="subcategory">Dados da subcategoria a ser criada.</param>
         [HttpPost]
         [ProducesResponseType(typeof(ReadSubcategoryDTO), 201)]
+        [ProducesResponseType(typeof(ReadSubcategoryDTO), 200)]
         [ProducesResponseType(typeof(string), 400)]
         public async Task<IActionResult> CreateSubcategoryAsync(CreateSubcategoryDTO subcategory)
         {
             try
             {
                 var createdSubcategory = await _subcategoryService.CreateSubcategoryAsync(subcategory);
-                return CreatedAtAction(nameof(GetSubcategoryByIdAsync), new { id = createdSubcategory.Id }, createdSubcategory);
+                var createdSubcategoryDto = _mapper.Map<ReadSubcategoryDTO>(createdSubcategory);
+
+                return CreatedAtAction(nameof(GetSubcategoryByIdAsync), new { id = createdSubcategory.Id }, createdSubcategoryDto);
             }
             catch (InvalidOperationException)
             {

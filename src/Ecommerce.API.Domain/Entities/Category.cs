@@ -7,5 +7,4 @@ public class Category
     public DateTime LastUpdate { get; set; }
     public bool Status { get; set; }
     public IList<Subcategory> Subcategories { get; set; } = new List<Subcategory>();
-
 }
