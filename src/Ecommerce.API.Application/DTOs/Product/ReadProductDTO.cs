@@ -12,6 +12,8 @@ public class ReadProductDTO
     public DateTime DateRegister { get; set; }
     public DateTime LastUpdate { get; set; }
     public bool Status { get; set; }
+    public int CategoryId { get; set; }
+    public int SubcategoryId { get; set; }
     public ReadCategoryDTO? Category { get; set; }
     public ReadSubcategoryDTO? Subcategory { get; set; }
 }
