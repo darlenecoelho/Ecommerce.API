@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Ecommerce.API.Application.DTOs.Category;
 using Ecommerce.API.Application.DTOs.Subcategory;
 using Ecommerce.API.Application.Interfaces;
 using Ecommerce.API.Domain.Entities;

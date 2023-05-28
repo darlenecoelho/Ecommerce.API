@@ -33,7 +33,7 @@ namespace Ecommerce.API.Controllers
         /// Obtém uma categoria pelo seu ID.
         /// </summary>
         /// <param name="id">O ID da categoria.</param>
-        [HttpGet("{id}")]
+        [HttpGet("{id}", Name = nameof(GetCategoryByIdAsync))]
         [ProducesResponseType(typeof(ReadCategoryDTO), 200)]
         [ProducesResponseType(typeof(string), 404)]
         public async Task<ActionResult<ReadCategoryDTO>> GetCategoryByIdAsync(int id)
@@ -54,14 +54,14 @@ namespace Ecommerce.API.Controllers
         /// </summary>
         /// <param name="category">A categoria a ser criada.</param>
         [HttpPost]
-        [ProducesResponseType(typeof(ReadCategoryDTO), 201)]
+        [ProducesResponseType(200)]
         [ProducesResponseType(typeof(string), 400)]
-        public async Task<ActionResult<ReadCategoryDTO>> CreateCategoryAsync([FromBody] CreateCategoryDTO category)
+        public async Task<IActionResult> CreateCategoryAsync([FromBody] CreateCategoryDTO category)
         {
             try
             {
-                var createdCategory = await _categoryService.CreateCategoryAsync(category);
-                return CreatedAtAction(nameof(GetCategoryByIdAsync), new { id = createdCategory.Id }, createdCategory);
+                await _categoryService.CreateCategoryAsync(category);
+                return Ok("Categoria cadastrada com sucesso.");
             }
             catch (InvalidOperationException)
             {
@@ -88,7 +88,7 @@ namespace Ecommerce.API.Controllers
                 }
 
                 var updatedCategory = await _categoryService.UpdateCategoryAsync(category);
-                return Ok(updatedCategory);
+                return Ok("Categoria atualizada com sucesso.");
             }
             catch (Exception)
             {
@@ -108,7 +108,7 @@ namespace Ecommerce.API.Controllers
             try
             {
                 await _categoryService.DeleteCategoryAsync(id);
-                return NoContent();
+                return Ok("Categoria deletada com sucesso.");
             }
             catch (Exception)
             {

@@ -1,7 +1,9 @@
-﻿using AutoMapper;
+﻿using Ardalis.GuardClauses;
+using AutoMapper;
 using Ecommerce.API.Application.DTOs.Product;
 using Ecommerce.API.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 
 namespace Ecommerce.API.Controllers
 {
@@ -54,14 +56,14 @@ namespace Ecommerce.API.Controllers
         /// </summary>
         /// <param name="product">Dados do produto a ser criado.</param>
         [HttpPost]
-        [ProducesResponseType(typeof(ReadProductDTO), 201)]
+        [ProducesResponseType(200)]
         [ProducesResponseType(typeof(string), 400)]
         public async Task<IActionResult> CreateProductAsync(CreateProductDTO product)
         {
             try
             {
-                var createdProduct = await _productService.CreateProductAsync(product);
-                return CreatedAtAction(nameof(GetProductByIdAsync), new { id = createdProduct.Id }, createdProduct);
+                await _productService.CreateProductAsync(product);
+                return Ok("Produto cadastrado com sucesso.");
             }
             catch (Exception ex)
             {
@@ -88,7 +90,7 @@ namespace Ecommerce.API.Controllers
                 }
 
                 var updatedProduct = await _productService.UpdateProductAsync(product);
-                return Ok(updatedProduct);
+                return Ok("Produto atualizado com sucesso.");
             }
             catch (Exception ex)
             {
@@ -108,7 +110,7 @@ namespace Ecommerce.API.Controllers
             try
             {
                 await _productService.DeleteProductAsync(id);
-                return NoContent();
+                return Ok("Produto deletado com sucesso.");
             }
             catch (Exception ex)
             {
