@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Ecommerce.API.Application.DTOs.Category;
 using Ecommerce.API.Application.DTOs.Subcategory;
 using Ecommerce.API.Application.Interfaces;
 using Ecommerce.API.Domain.Entities;
@@ -69,21 +70,15 @@ namespace Ecommerce.API.Application.Services
                 throw new Exception("Subcategoria não encontrada. Verifique o ID informado.");
             }
 
-            var category = await _categoryRepository.GetCategoryByIdAsync(subcategory.CategoryId);
-            if (category == null)
+            if (await _subcategoryRepository.GetSubcategorytByNameAsync(subcategory.Name) != null && existingSubcategory.Name != subcategory.Name)
             {
-                throw new Exception("Categoria não encontrada. Verifique o ID informado.");
+                throw new InvalidOperationException("Subcategoria já cadastrada. Por favor, altere o nome da subcategoria.");
             }
 
-            if (!category.Status)
-            {
-                throw new InvalidOperationException("Não é possível cadastrar uma subcategoria em uma categoria inativa.");
-            }
+            existingSubcategory.Name = subcategory.Name;
+            existingSubcategory.LastUpdate = DateTime.Now;
 
-            var subcategoryToUpdate = _mapper.Map<Subcategory>(subcategory);
-            subcategoryToUpdate.LastUpdate = DateTime.UtcNow;
-
-            var updatedSubcategory = await _subcategoryRepository.UpdateSubcategoryAsync(subcategoryToUpdate);
+            var updatedSubcategory = await _subcategoryRepository.UpdateSubcategoryAsync(existingSubcategory);
 
             return _mapper.Map<ReadSubcategoryDTO>(updatedSubcategory);
         }

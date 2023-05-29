@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using Ecommerce.API.Application.DTOs.Category;
+using Ecommerce.API.Application.DTOs.Product;
 using Ecommerce.API.Application.DTOs.Subcategory;
 using Ecommerce.API.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -57,21 +59,18 @@ namespace Ecommerce.API.Controllers
         /// </summary>
         /// <param name="subcategory">Dados da subcategoria a ser criada.</param>
         [HttpPost]
-        [ProducesResponseType(typeof(ReadSubcategoryDTO), 201)]
-        [ProducesResponseType(typeof(ReadSubcategoryDTO), 200)]
+        [ProducesResponseType(200)]
         [ProducesResponseType(typeof(string), 400)]
         public async Task<IActionResult> CreateSubcategoryAsync(CreateSubcategoryDTO subcategory)
         {
             try
             {
-                var createdSubcategory = await _subcategoryService.CreateSubcategoryAsync(subcategory);
-                var createdSubcategoryDto = _mapper.Map<ReadSubcategoryDTO>(createdSubcategory);
-
-                return CreatedAtAction(nameof(GetSubcategoryByIdAsync), new { id = createdSubcategory.Id }, createdSubcategoryDto);
+                await _subcategoryService.CreateSubcategoryAsync(subcategory);
+                return Ok("Subcategoria cadastrada com sucesso.");
             }
             catch (InvalidOperationException)
             {
-                return BadRequest("Subcategoria já cadastrada. Por favor, altere o nome da subcategoria.");
+                return BadRequest("Subcategoria já cadastrada. Por favor, altere o nome da categoria.");
             }
         }
 
@@ -94,7 +93,7 @@ namespace Ecommerce.API.Controllers
                 }
 
                 var updatedSubcategory = await _subcategoryService.UpdateSubcategoryAsync(subcategory);
-                return Ok(updatedSubcategory);
+                return Ok("Subcategoria atualizada com sucesso.");
             }
             catch (Exception)
             {
@@ -114,11 +113,11 @@ namespace Ecommerce.API.Controllers
             try
             {
                 await _subcategoryService.DeleteSubcategoryAsync(id);
-                return NoContent();
+                return Ok("Subcategoria deletada com sucesso.");
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return NotFound(ex.Message);
+                return NotFound("Subcategoria não encontrada.");
             }
         }
     }
