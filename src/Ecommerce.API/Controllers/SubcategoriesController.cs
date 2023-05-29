@@ -1,12 +1,7 @@
 ﻿using AutoMapper;
-using Ecommerce.API.Application.DTOs.Category;
-using Ecommerce.API.Application.DTOs.Product;
 using Ecommerce.API.Application.DTOs.Subcategory;
 using Ecommerce.API.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace Ecommerce.API.Controllers
 {

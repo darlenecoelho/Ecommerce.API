@@ -30,7 +30,6 @@ namespace Ecommerce.API.Application.Services
             {
                 throw new Exception("Categoria não encontrada. Verifique o id informado");
             }
-
             return _mapper.Map<ReadCategoryDTO>(category);
         }
 
@@ -61,7 +60,7 @@ namespace Ecommerce.API.Application.Services
             }
 
             existingCategory.Name = category.Name;
-            existingCategory.LastUpdate = DateTime.UtcNow;
+            existingCategory.LastUpdate = DateTime.Now;
 
             var updatedCategory = await _categoryRepository.UpdateCategoryAsync(existingCategory);
 

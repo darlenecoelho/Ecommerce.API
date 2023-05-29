@@ -1,4 +1,5 @@
 ﻿using Ecommerce.API.Extensions;
+using Ecommerce.API.Infrastructure.Extensions;
 using Ecommerce.API.Infrastructure.IoC;
 using System.Reflection;
 
@@ -21,6 +22,11 @@ builder.Services.AddSwaggerGen(c =>
     c.IncludeXmlComments(xmlPath);
 });
 builder.Services.AddServices(builder.Configuration);
+
+// Configuração do Polly
+builder.Services.AddHttpClient("EcommerceClient")
+    .AddPolicyHandler(RetryPolicyFactory.GetRetryPolicy());
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
