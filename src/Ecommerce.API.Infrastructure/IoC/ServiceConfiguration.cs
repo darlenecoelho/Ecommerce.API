@@ -29,5 +29,6 @@ public static class ServiceConfiguration
 
         // Add AutoMapper
         services.AddAutoMapper(typeof(CategoryMappingProfile), typeof(SubcategoryMappingProfile), typeof(ProductMappingProfile));
+
     }
 }

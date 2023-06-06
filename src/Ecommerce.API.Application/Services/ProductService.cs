@@ -1,9 +1,10 @@
 ﻿using AutoMapper;
 using Ecommerce.API.Application.DTOs.Product;
+using Ecommerce.API.Application.Interfaces;
 using Ecommerce.API.Domain.Entities;
 using Ecommerce.API.Domain.Repositories.Interfaces;
 
-namespace Ecommerce.API.Application.Interfaces
+namespace Ecommerce.API.Application.Services
 {
     public class ProductService : IProductService
     {
