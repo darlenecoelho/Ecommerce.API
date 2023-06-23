@@ -69,15 +69,21 @@ namespace Ecommerce.API.Application.Services
                 throw new Exception("Subcategoria não encontrada. Verifique o ID informado.");
             }
 
-            if (await _subcategoryRepository.GetSubcategorytByNameAsync(subcategory.Name) != null && existingSubcategory.Name != subcategory.Name)
+            var category = await _categoryRepository.GetCategoryByIdAsync(subcategory.CategoryId);
+            if (category == null)
             {
-                throw new InvalidOperationException("Subcategoria já cadastrada. Por favor, altere o nome da subcategoria.");
+                throw new Exception("Categoria não encontrada. Verifique o ID informado.");
             }
 
-            existingSubcategory.Name = subcategory.Name;
-            existingSubcategory.LastUpdate = DateTime.Now;
+            if (!category.Status)
+            {
+                throw new InvalidOperationException("Não é possível cadastrar uma subcategoria em uma categoria inativa.");
+            }
 
-            var updatedSubcategory = await _subcategoryRepository.UpdateSubcategoryAsync(existingSubcategory);
+            var subcategoryToUpdate = _mapper.Map<Subcategory>(subcategory);
+            subcategoryToUpdate.LastUpdate = DateTime.UtcNow;
+
+            var updatedSubcategory = await _subcategoryRepository.UpdateSubcategoryAsync(subcategoryToUpdate);
 
             return _mapper.Map<ReadSubcategoryDTO>(updatedSubcategory);
         }

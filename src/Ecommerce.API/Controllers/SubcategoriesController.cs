@@ -54,18 +54,21 @@ namespace Ecommerce.API.Controllers
         /// </summary>
         /// <param name="subcategory">Dados da subcategoria a ser criada.</param>
         [HttpPost]
-        [ProducesResponseType(200)]
+        [ProducesResponseType(typeof(ReadSubcategoryDTO), 201)]
+        [ProducesResponseType(typeof(ReadSubcategoryDTO), 200)]
         [ProducesResponseType(typeof(string), 400)]
         public async Task<IActionResult> CreateSubcategoryAsync(CreateSubcategoryDTO subcategory)
         {
             try
             {
-                await _subcategoryService.CreateSubcategoryAsync(subcategory);
-                return Ok("Subcategoria cadastrada com sucesso.");
+                var createdSubcategory = await _subcategoryService.CreateSubcategoryAsync(subcategory);
+                var createdSubcategoryDto = _mapper.Map<ReadSubcategoryDTO>(createdSubcategory);
+
+                return CreatedAtAction(nameof(GetSubcategoryByIdAsync), new { id = createdSubcategory.Id }, createdSubcategoryDto);
             }
             catch (InvalidOperationException)
             {
-                return BadRequest("Subcategoria já cadastrada. Por favor, altere o nome da categoria.");
+                return BadRequest("Subcategoria já cadastrada. Por favor, altere o nome da subcategoria.");
             }
         }
 
@@ -88,7 +91,7 @@ namespace Ecommerce.API.Controllers
                 }
 
                 var updatedSubcategory = await _subcategoryService.UpdateSubcategoryAsync(subcategory);
-                return Ok("Subcategoria atualizada com sucesso.");
+                return Ok(updatedSubcategory);
             }
             catch (Exception)
             {
@@ -108,11 +111,11 @@ namespace Ecommerce.API.Controllers
             try
             {
                 await _subcategoryService.DeleteSubcategoryAsync(id);
-                return Ok("Subcategoria deletada com sucesso.");
+                return NoContent();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return NotFound("Subcategoria não encontrada.");
+                return NotFound(ex.Message);
             }
         }
     }
