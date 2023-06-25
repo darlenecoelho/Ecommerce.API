@@ -47,7 +47,7 @@ namespace Ecommerce.API.Application.Services
 
         public async Task<ReadCategoryDTO> CreateCategoryAsync(CreateCategoryDTO category)
         {
-            _logger.LogInformation("Criando categoria: {CategoryName}", category.Name);
+            _logger.LogInformation("Criando categoria: {Name}", category.Name);
             var existingCategory = await _categoryRepository.GetCategoryByNameAsync(category.Name);
 
             if (existingCategory != null)
