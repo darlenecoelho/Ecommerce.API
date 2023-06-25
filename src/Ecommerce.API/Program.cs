@@ -1,4 +1,5 @@
-﻿using Ecommerce.API.Extensions;
+﻿using Ecommerce.API.Configurations;
+using Ecommerce.API.Extensions;
 using Ecommerce.API.Infrastructure.IoC;
 using System.Reflection;
 
@@ -11,6 +12,7 @@ if (builder.Environment.IsDevelopment())
 }
 
 // Configuração dos serviços
+SerilogConfig.AddSerilog(builder);
 builder.Services.AddEcommerceContext(builder.Configuration);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
