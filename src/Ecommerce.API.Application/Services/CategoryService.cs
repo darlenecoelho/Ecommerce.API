@@ -35,7 +35,8 @@ namespace Ecommerce.API.Application.Services
 
         public async Task<ReadCategoryDTO> CreateCategoryAsync(CreateCategoryDTO category)
         {
-            if (await _categoryRepository.GetCategoryByNameAsync(category.Name) != null)
+            var existingCategory = await _categoryRepository.GetCategoryByNameAsync(category.Name);
+            if (existingCategory != null)
             {
                 throw new InvalidOperationException("Categoria já cadastrada. Por favor, altere o nome da categoria.");
             }
@@ -52,11 +53,6 @@ namespace Ecommerce.API.Application.Services
             if (existingCategory == null)
             {
                 throw new Exception("Categoria não encontrada. Verifique o id informado");
-            }
-
-            if (await _categoryRepository.GetCategoryByNameAsync(category.Name) != null && existingCategory.Name != category.Name)
-            {
-                throw new InvalidOperationException("Categoria já cadastrada. Por favor, altere o nome da categoria.");
             }
 
             existingCategory.Name = category.Name;

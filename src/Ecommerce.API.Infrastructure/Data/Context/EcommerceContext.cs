@@ -13,6 +13,7 @@ public class EcommerceContext : DbContext
     public DbSet<Subcategory> Subcategories { get; set; }
     public DbSet<Product> Products { get; set; }
 
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(EcommerceContext).Assembly);
