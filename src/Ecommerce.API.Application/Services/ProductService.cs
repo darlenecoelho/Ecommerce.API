@@ -3,6 +3,7 @@ using Ecommerce.API.Application.DTOs.Product;
 using Ecommerce.API.Application.Interfaces;
 using Ecommerce.API.Domain.Entities;
 using Ecommerce.API.Domain.Repositories.Interfaces;
+using Microsoft.Extensions.Logging;
 
 namespace Ecommerce.API.Application.Services
 {
@@ -12,13 +13,15 @@ namespace Ecommerce.API.Application.Services
         private readonly IMapper _mapper;
         private readonly ICategoryService _categoryService;
         private readonly ISubcategoryService _subcategoryService;
+        private readonly ILogger<ProductService> _logger;
 
-        public ProductService(IProductRepository productRepository, IMapper mapper, ICategoryService categoryService, ISubcategoryService subcategoryService)
+        public ProductService(IProductRepository productRepository, IMapper mapper, ICategoryService categoryService, ISubcategoryService subcategoryService, ILogger<ProductService> logger)
         {
             _productRepository = productRepository;
             _mapper = mapper;
             _categoryService = categoryService;
             _subcategoryService = subcategoryService;
+            _logger = logger;
         }
 
         public async Task<List<ReadProductDTO>> GetAllProductsAsync()
@@ -32,6 +35,7 @@ namespace Ecommerce.API.Application.Services
             var product = await _productRepository.GetProductByIdAsync(id);
             if (product == null)
             {
+                _logger.LogError("Produto não encontrado. Verifique o id informado. Id: {id}", id);
                 throw new Exception("Produto não encontrado. Verifique o id informado");
             }
 
@@ -43,18 +47,21 @@ namespace Ecommerce.API.Application.Services
             var existingProduct = await _productRepository.GetProductByNameAsync(product.Name);
             if (existingProduct != null)
             {
+                _logger.LogError("O produto já foi cadastrado. Informe um nome diferente. Product Name: {productName}", product.Name);
                 throw new Exception("O produto já foi cadastrado. Informe um nome diferente.");
             }
 
             var category = await _categoryService.GetCategoryByIdAsync(product.CategoryId);
             if (category == null || !category.Status)
             {
+                _logger.LogError("Não é possível cadastrar um produto em uma categoria inativa. Category ID: {categoryId}", product.CategoryId);
                 throw new Exception("Não é possível cadastrar um produto em uma categoria inativa.");
             }
 
             var subcategory = await _subcategoryService.GetSubcategoryByIdAsync(product.SubcategoryId);
             if (subcategory == null || !subcategory.Status)
             {
+                _logger.LogError("Não é possível cadastrar um produto em uma subcategoria inativa. Subcategory ID: {subcategoryId}", product.SubcategoryId);
                 throw new Exception("Não é possível cadastrar um produto em uma subcategoria inativa.");
             }
 
@@ -77,6 +84,7 @@ namespace Ecommerce.API.Application.Services
 
             if (createdProduct.Id != product.Id)
             {
+                _logger.LogError("O ID do produto não corresponde ao ID fornecido. Product ID: {productId}, Provided ID: {providedId}", createdProduct.Id, product.Id);
                 throw new Exception("O ID do produto não corresponde ao ID fornecido.");
             }
 
@@ -88,6 +96,7 @@ namespace Ecommerce.API.Application.Services
             var product = await _productRepository.GetProductByIdAsync(id);
             if (product == null)
             {
+                _logger.LogError("Produto não encontrado. ID: {productId}", id);
                 throw new Exception("Produto não encontrado.");
             }
 
