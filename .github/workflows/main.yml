@@ -20,13 +20,13 @@ jobs:
           dotnet-version: '7.0' # Use a versão 7 aqui
 
       - name: Restore Dependencies
-        run: dotnet restore
+        run: dotnet restore /Ecommerce.API.Application
 
       - name: Build Application
-        run: dotnet build --configuration Release
+        run: dotnet build /Ecommerce.API.Application --configuration Release
 
       - name: Publish Application
-        run: dotnet publish -c Release -o ./publish
+        run: dotnet publish /Ecommerce.API.Application -c Release -o ./publish
 
       - name: Deploy to Dev
         if: contains(github.event.pull_request.head.ref, 'dev') && github.event.pull_request.merged
