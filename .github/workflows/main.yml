@@ -1,0 +1,47 @@
+name: CI/CD Pipeline
+
+on:
+  pull_request:
+    types:
+      - closed
+
+jobs:
+  build_and_deploy:
+    name: Build and Deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: '7.0' # Use a versão 7 aqui
+
+      - name: Restore Dependencies
+        run: dotnet restore
+
+      - name: Build Application
+        run: dotnet build --configuration Release
+
+      - name: Publish Application
+        run: dotnet publish -c Release -o ./publish
+
+      - name: Deploy to Dev
+        if: contains(github.event.pull_request.head.ref, 'dev') && github.event.pull_request.merged
+        run: |
+          # Etapas para implantar no ambiente de desenvolvimento
+          echo "Deploying to Dev environment..."
+
+      - name: Deploy to HML
+        if: contains(github.event.pull_request.head.ref, 'hml') && github.event.pull_request.merged
+        run: |
+          # Etapas para implantar no ambiente de homologação
+          echo "Deploying to HML environment..."
+
+      - name: Deploy to Prod
+        if: contains(github.event.pull_request.head.ref, 'prod') && github.event.pull_request.merged
+        run: |
+          # Etapas para implantar no ambiente de produção
+          echo "Deploying to Prod environment..."
