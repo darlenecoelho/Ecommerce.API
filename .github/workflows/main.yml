@@ -8,7 +8,7 @@ on:
 jobs:
   build_and_deploy:
     name: Build and Deploy
-    runs-on: ubuntu-latest
+    runs-on: windows-latest # Use o sistema operacional Windows
 
     steps:
       - name: Checkout Repository
@@ -20,13 +20,13 @@ jobs:
           dotnet-version: '7.0' # Use a versão 7 aqui
 
       - name: Restore Dependencies
-        run: dotnet restore /Ecommerce.API.Application
+        run: dotnet restore C:\Users\coelh\source\repos\Ecommerce.API\src\Ecommerce.API\Ecommerce.API.sln
 
       - name: Build Application
-        run: dotnet build /Ecommerce.API.Application --configuration Release
+        run: dotnet build C:\Users\coelh\source\repos\Ecommerce.API\src\Ecommerce.API\Ecommerce.API.sln --configuration Release
 
       - name: Publish Application
-        run: dotnet publish /Ecommerce.API.Application -c Release -o ./publish
+        run: dotnet publish C:\Users\coelh\source\repos\Ecommerce.API\src\Ecommerce.API\Ecommerce.API.sln -c Release -o ./publish
 
       - name: Deploy to Dev
         if: contains(github.event.pull_request.head.ref, 'dev') && github.event.pull_request.merged
