@@ -16,7 +16,7 @@ namespace Ecommerce.API.Application.Services
 
         public SubcategoryService(ILogger<SubcategoryService> logger,
                                   IMapper mapper,
-                                  ISubcategoryRepository subcategoryRepository, 
+                                  ISubcategoryRepository subcategoryRepository,
                                   ICategoryRepository categoryRepository)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));

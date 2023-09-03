@@ -1,6 +1,4 @@
-﻿using Ecommerce.API.Application.DTOs.Subcategory;
-
-namespace Ecommerce.API.Application.DTOs.Category
+﻿namespace Ecommerce.API.Application.DTOs.Category
 {
     public class UpdateCategoryDTO
     {

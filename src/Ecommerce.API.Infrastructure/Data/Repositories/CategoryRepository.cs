@@ -44,9 +44,9 @@ namespace Ecommerce.API.Infrastructure.Data.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task<Category> GetCategoryByNameAsync(string category) 
+        public async Task<Category> GetCategoryByNameAsync(string category)
         {
-            return await _context.Categories.FirstOrDefaultAsync(c => c.Name == category); 
+            return await _context.Categories.FirstOrDefaultAsync(c => c.Name == category);
         }
     }
 }

@@ -11,13 +11,9 @@ public class CategoryMappingProfile : Profile
     {
         CreateMap<Category, ReadCategoryDTO>()
             .ForMember(dest => dest.Subcategories, opt => opt.MapFrom(src => src.Subcategories));
-
         CreateMap<CreateCategoryDTO, Category>();
         CreateMap<UpdateCategoryDTO, Category>();
-
-        CreateMap<Subcategory, ReadSubcategoryDTO>()
-            .ForMember(dest => dest.Products, opt => opt.Ignore());
-
+        CreateMap<Subcategory, ReadSubcategoryDTO>();
         CreateMap<CreateSubcategoryDTO, Subcategory>();
     }
 }

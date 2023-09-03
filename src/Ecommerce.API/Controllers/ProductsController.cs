@@ -1,9 +1,7 @@
-﻿using Ardalis.GuardClauses;
-using AutoMapper;
+﻿using AutoMapper;
 using Ecommerce.API.Application.DTOs.Product;
 using Ecommerce.API.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using System.Net;
 
 namespace Ecommerce.API.Controllers
 {
