@@ -1,5 +1,6 @@
 ﻿using Ecommerce.API.Application.Commands.Subcategory;
 using Ecommerce.API.Application.DTOs.Subcategory;
+using Ecommerce.API.Application.Handlers.CategoryCommandHandler;
 using Ecommerce.API.Application.Handlers.SubcategoryHandler;
 using Ecommerce.API.Application.Interfaces;
 using Ecommerce.API.Application.Mappings;
@@ -35,6 +36,7 @@ public static class ServiceConfiguration
 
         // Add AutoMapper
         services.AddMediatR(Assembly.GetExecutingAssembly());
+        services.AddMediatR(typeof(CreateCategoryCommandHandler).Assembly);
         services.AddTransient<IRequestHandler<GetSubcategoryByIdQuery, ReadSubcategoryDTO>, GetSubcategoryByIdQueryHandler>();
         services.AddTransient<IRequestHandler<GetAllSubcategoriesQuery, List<ReadSubcategoryDTO>>, GetAllSubcategoriesQueryHandler>();
         services.AddScoped<IRequestHandler<CreateSubcategoryCommand, ReadSubcategoryDTO>, CreateSubcategoryCommandHandler>();
