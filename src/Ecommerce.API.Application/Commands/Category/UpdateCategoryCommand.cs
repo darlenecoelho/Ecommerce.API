@@ -1,6 +1,9 @@
-﻿namespace Ecommerce.API.Application.Commands.Category
+﻿using MediatR;
+
+namespace Ecommerce.API.Application.Commands.Category;
+
+public class UpdateCategoryCommand 
 {
-    internal class UpdateCategoryCommand
-    {
-    }
+    public int Id { get; set; }
+    public string? NewName { get; set; }
 }
