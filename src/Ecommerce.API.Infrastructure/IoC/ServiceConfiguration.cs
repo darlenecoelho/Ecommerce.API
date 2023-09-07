@@ -23,6 +23,7 @@ public static class ServiceConfiguration
         // Add DbContext
         services.AddDbContext<EcommerceContext>(options =>
             options.UseMySQL(configuration.GetConnectionString("EcommerceConnection")));
+        services.AddLogging();
 
         // Add repositories
         services.AddScoped<ICategoryRepository, CategoryRepository>();

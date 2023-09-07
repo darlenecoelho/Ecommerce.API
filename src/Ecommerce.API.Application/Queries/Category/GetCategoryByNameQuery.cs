@@ -5,5 +5,10 @@ namespace Ecommerce.API.Application.Queries.Category;
 
 public class GetCategoryByNameQuery : IRequest<ReadCategoryDTO>
 {
-    public string? Name { get; set; }
+    public string Name { get; set; }
+
+    public GetCategoryByNameQuery(string name)
+    {
+        Name = name;
+    }
 }
