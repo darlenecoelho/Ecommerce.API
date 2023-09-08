@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
+using Ecommerce.API.Application.Commands.Product;
 using Ecommerce.API.Application.DTOs.Product;
 using Ecommerce.API.Application.Interfaces;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Ecommerce.API.Controllers
@@ -11,9 +13,11 @@ namespace Ecommerce.API.Controllers
     {
         private readonly IProductService _productService;
         private readonly IMapper _mapper;
+        private readonly IMediator _mediator;
 
-        public ProductController(IProductService productService, IMapper mapper)
+        public ProductController(IMediator mediator, IProductService productService, IMapper mapper)
         {
+            _mediator = mediator;
             _productService = productService ?? throw new ArgumentNullException(nameof(productService));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
@@ -52,29 +56,37 @@ namespace Ecommerce.API.Controllers
         /// <summary>
         /// Cria um novo produto.
         /// </summary>
-        /// <param name="product">Dados do produto a ser criado.</param>
+        /// <param name="command">Dados do produto a ser criado.</param>
         [HttpPost]
         [ProducesResponseType(200)]
         [ProducesResponseType(typeof(string), 400)]
-        public async Task<IActionResult> CreateProductAsync(CreateProductDTO product)
+        public async Task<IActionResult> CreateProductAsync([FromBody] CreateProductCommand command)
         {
             try
             {
-                await _productService.CreateProductAsync(product);
-                return Ok("Produto cadastrado com sucesso.");
+                var response = await _mediator.Send(command);
+
+                if (response.ProductId > 0)
+                {
+                    return Ok(response);
+                }
+                else
+                {
+                    return BadRequest(response);
+                }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return BadRequest(ex.Message);
+                return BadRequest("Erro ao criar um produto.");
             }
         }
 
-        /// <summary>
-        /// Atualiza um produto existente.
-        /// </summary>
-        /// <param name="id">ID do produto a ser atualizado.</param>
-        /// <param name="product">Dados do produto atualizado.</param>
-        [HttpPut("{id}")]
+            /// <summary>
+            /// Atualiza um produto existente.
+            /// </summary>
+            /// <param name="id">ID do produto a ser atualizado.</param>
+            /// <param name="product">Dados do produto atualizado.</param>
+            [HttpPut("{id}")]
         [ProducesResponseType(typeof(ReadProductDTO), 200)]
         [ProducesResponseType(typeof(string), 400)]
         [ProducesResponseType(typeof(string), 404)]

@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Ecommerce.API.Application.Commands.Subcategory;
 using Ecommerce.API.Application.DTOs.Subcategory;
 using Ecommerce.API.Domain.Entities;
 
@@ -8,9 +7,11 @@ public class SubcategoryMappingProfile : Profile
 {
     public SubcategoryMappingProfile()
     {
-        CreateMap<Subcategory, ReadSubcategoryDTO>();
-        CreateMap<CreateSubcategoryDTO, Subcategory>();
-        CreateMap<UpdateSubcategoryDTO, Subcategory>();
-        CreateMap<CreateSubcategoryCommand, Subcategory>();
+        CreateMap<Subcategory, ReadSubcategoryDTO>()
+          .ReverseMap();
+        CreateMap<CreateSubcategoryDTO, Subcategory>()
+            .ReverseMap();
+        CreateMap<UpdateSubcategoryDTO, Subcategory>()
+            .ReverseMap();
     }
 }

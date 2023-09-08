@@ -47,8 +47,7 @@ public class CategoryController : ControllerBase
     {
         try
         {
-            var query = new GetCategoryByIdQuery(id);
-            var category = await _mediator.Send(query);
+            var category = await _mediator.Send(new GetCategoryByIdQuery { Id = id});
 
             return Ok(category);
         }

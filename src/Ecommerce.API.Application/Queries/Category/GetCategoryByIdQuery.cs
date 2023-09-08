@@ -7,8 +7,4 @@ public class GetCategoryByIdQuery : IRequest<ReadCategoryDTO>
 {
     public int Id { get; set; }
 
-    public GetCategoryByIdQuery(int id)
-    {
-        Id = id;
-    }
 }
