@@ -1,6 +1,8 @@
-﻿using AutoMapper;
+﻿using Ecommerce.API.Application.Commands.Subcategory;
 using Ecommerce.API.Application.DTOs.Subcategory;
 using Ecommerce.API.Application.Interfaces;
+using Ecommerce.API.Application.Queries.Subcategory;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Ecommerce.API.Controllers
@@ -10,12 +12,12 @@ namespace Ecommerce.API.Controllers
     public class SubcategoryController : ControllerBase
     {
         private readonly ISubcategoryService _subcategoryService;
-        private readonly IMapper _mapper;
+        private readonly IMediator _mediator;
 
-        public SubcategoryController(ISubcategoryService subcategoryService, IMapper mapper)
+        public SubcategoryController(ISubcategoryService subcategoryService, IMediator mediator)
         {
-            _subcategoryService = subcategoryService ?? throw new ArgumentNullException(nameof(subcategoryService));
-            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+            _mediator = mediator;
+            _subcategoryService = subcategoryService;
         }
 
         /// <summary>
@@ -23,10 +25,19 @@ namespace Ecommerce.API.Controllers
         /// </summary>
         [HttpGet]
         [ProducesResponseType(typeof(List<ReadSubcategoryDTO>), 200)]
-        public async Task<IActionResult> GetAllSubcategoriesAsync()
+        public async Task<ActionResult<List<ReadSubcategoryDTO>>> GetAllSubcategories()
         {
-            var subcategories = await _subcategoryService.GetAllSubcategoriesAsync();
-            return Ok(subcategories);
+            try
+            {
+                var query = new GetAllSubcategoriesQuery();
+                var subcategories = await _mediator.Send(query);
+
+                return Ok(subcategories);
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro ao listar subcategorias.");
+            }
         }
 
         /// <summary>
@@ -36,66 +47,68 @@ namespace Ecommerce.API.Controllers
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(ReadSubcategoryDTO), 200)]
         [ProducesResponseType(typeof(string), 404)]
-        public async Task<IActionResult> GetSubcategoryByIdAsync(int id)
+        public async Task<ActionResult<ReadSubcategoryDTO>> GetSubcategoryById(int id)
         {
-            try
+            var subcategory = await _mediator.Send(new GetSubcategoryByIdQuery { Id = id });
+
+            if (subcategory == null)
             {
-                var subcategory = await _subcategoryService.GetSubcategoryByIdAsync(id);
-                return Ok(subcategory);
+                return NotFound();
             }
-            catch (Exception)
-            {
-                return NotFound("Subcategoria não encontrada");
-            }
+
+            return Ok(subcategory);
         }
 
         /// <summary>
         /// Cria uma nova subcategoria.
         /// </summary>
-        /// <param name="subcategory">Dados da subcategoria a ser criada.</param>
+        /// <param name="command">Dados da subcategoria a ser criada.</param>
         [HttpPost]
         [ProducesResponseType(typeof(ReadSubcategoryDTO), 201)]
         [ProducesResponseType(typeof(ReadSubcategoryDTO), 200)]
         [ProducesResponseType(typeof(string), 400)]
-        public async Task<IActionResult> CreateSubcategoryAsync(CreateSubcategoryDTO subcategory)
+        public async Task<IActionResult> CreateSubcategoryAsync(CreateSubcategoryCommand command)
         {
-            try
-            {
-                var createdSubcategory = await _subcategoryService.CreateSubcategoryAsync(subcategory);
-                var createdSubcategoryDto = _mapper.Map<ReadSubcategoryDTO>(createdSubcategory);
+            var response = await _mediator.Send(command);
 
-                return CreatedAtAction(nameof(GetSubcategoryByIdAsync), new { id = createdSubcategory.Id }, createdSubcategoryDto);
-            }
-            catch (InvalidOperationException)
+            if (!string.IsNullOrEmpty(response.Message))
             {
-                return BadRequest("Subcategoria já cadastrada. Por favor, altere o nome da subcategoria.");
+                return BadRequest(new { message = response.Message });
             }
+
+            return Ok();
         }
 
         /// <summary>
         /// Atualiza uma subcategoria existente.
         /// </summary>
         /// <param name="id">ID da subcategoria a ser atualizada.</param>
-        /// <param name="subcategory">Dados da subcategoria atualizada.</param>
+        /// <param name="command">Dados da subcategoria atualizada.</param>
         [HttpPut("{id}")]
         [ProducesResponseType(typeof(ReadSubcategoryDTO), 200)]
         [ProducesResponseType(typeof(string), 400)]
         [ProducesResponseType(typeof(string), 404)]
-        public async Task<ActionResult<ReadSubcategoryDTO>> UpdateSubcategoryAsync(int id, [FromBody] UpdateSubcategoryDTO subcategory)
+        public async Task<IActionResult> UpdateSubcategory(int id, [FromBody] UpdateSubcategoryCommand command)
         {
             try
             {
-                if (id != subcategory.Id)
+                if (id != command.Id)
                 {
-                    return BadRequest("O ID da subcategoria na URL deve corresponder ao ID fornecido no corpo da requisição.");
+                    return BadRequest("O ID informado na URL não corresponde ao ID no corpo da solicitação.");
                 }
 
-                var updatedSubcategory = await _subcategoryService.UpdateSubcategoryAsync(subcategory);
-                return Ok(updatedSubcategory);
+                var response = await _mediator.Send(command);
+
+                if (response == null)
+                {
+                    return NotFound("Subcategoria não encontrada. Verifique o ID informado.");
+                }
+
+                return Ok(response);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return NotFound("Subcategoria não encontrada.");
+                return StatusCode(500, $"Ocorreu um erro interno: {ex.Message}");
             }
         }
 

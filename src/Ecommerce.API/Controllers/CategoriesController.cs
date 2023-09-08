@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Ecommerce.API.Application.Commands.Category;
 using Ecommerce.API.Application.DTOs.Category;
-using Ecommerce.API.Application.Interfaces;
 using Ecommerce.API.Application.Queries.Category;
 using Ecommerce.API.Application.Responses.Category;
 using MediatR;
@@ -17,14 +16,12 @@ namespace Ecommerce.API.Controllers;
 public class CategoryController : ControllerBase
 {
     private readonly IMapper _mapper;
-    private readonly ICategoryService _categoryService;
     private readonly IMediator _mediator;
 
-    public CategoryController(IMapper mapper, IMediator mediator, ICategoryService categoryService)
+    public CategoryController(IMapper mapper, IMediator mediator)
     {
         _mediator = mediator;
-        _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-        _categoryService = categoryService ?? throw new ArgumentNullException(nameof(categoryService));
+        _mapper = mapper;
     }
 
     /// <summary>
@@ -64,13 +61,13 @@ public class CategoryController : ControllerBase
     /// <summary>
     /// Cria uma nova categoria.
     /// </summary>
-    /// <param name="request">Os dados da categoria a ser criada.</param>
+    /// <param name="command">Os dados da categoria a ser criada.</param>
     [HttpPost]
     [ProducesResponseType(typeof(CreateCategoryResponse), 200)]
     [ProducesResponseType(typeof(string), 400)]
-    public async Task<IActionResult> CreateCategoryAsync([FromBody] CreateCategoryCommand request)
+    public async Task<IActionResult> CreateCategoryAsync([FromBody] CreateCategoryCommand command)
     {
-        var response = await _mediator.Send(request);
+        var response = await _mediator.Send(command);
 
         if (!string.IsNullOrEmpty(response.Message))
         {
@@ -126,7 +123,7 @@ public class CategoryController : ControllerBase
 
             if (result.Success)
             {
-                return NoContent(); 
+                return NoContent();
             }
             else
             {
