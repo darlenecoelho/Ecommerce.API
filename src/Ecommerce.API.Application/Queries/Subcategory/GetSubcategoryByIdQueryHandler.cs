@@ -1,11 +1,10 @@
 ﻿using AutoMapper;
 using Ecommerce.API.Application.DTOs.Subcategory;
-using Ecommerce.API.Application.Queries.Subcategory;
 using Ecommerce.API.Domain.Repositories.Interfaces;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
-namespace Ecommerce.API.Application.Handlers.SubcategoryHandler;
+namespace Ecommerce.API.Application.Queries.Subcategory;
 
 public class GetSubcategoryByIdQueryHandler : IRequestHandler<GetSubcategoryByIdQuery, ReadSubcategoryDTO>
 {
@@ -25,7 +24,7 @@ public class GetSubcategoryByIdQueryHandler : IRequestHandler<GetSubcategoryById
 
     public async Task<ReadSubcategoryDTO> Handle(GetSubcategoryByIdQuery request, CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Obtendo subcategoria com ID: {Id}", request.Id);
+        _logger.LogInformation("Buscando subcategoria com ID: {Id}", request.Id);
 
         var subcategory = await _subcategoryRepository.GetSubcategoryByIdAsync(request.Id);
 
