@@ -2,18 +2,18 @@
 using Ecommerce.API.Application.Commands.Product;
 using Ecommerce.API.Application.Commands.Subcategory;
 using Ecommerce.API.Application.DTOs.Category;
+using Ecommerce.API.Application.DTOs.Product;
 using Ecommerce.API.Application.DTOs.Subcategory;
 using Ecommerce.API.Application.Handlers.CategoryCommandHandler;
 using Ecommerce.API.Application.Handlers.ProductCommandHandler;
 using Ecommerce.API.Application.Handlers.SubcategoryCommandHandler;
-using Ecommerce.API.Application.Interfaces;
 using Ecommerce.API.Application.Mappings;
 using Ecommerce.API.Application.Queries.Category;
+using Ecommerce.API.Application.Queries.Product;
 using Ecommerce.API.Application.Queries.Subcategory;
 using Ecommerce.API.Application.Responses.Category;
 using Ecommerce.API.Application.Responses.Product;
 using Ecommerce.API.Application.Responses.Subcategory;
-using Ecommerce.API.Application.Services;
 using Ecommerce.API.Domain.Repositories.Interfaces;
 using Ecommerce.API.Infrastructure.Data.Context;
 using Ecommerce.API.Infrastructure.Data.Repositories;
@@ -38,15 +38,11 @@ public static class ServiceConfiguration
         services.AddScoped<ISubcategoryRepository, SubcategoryRepository>();
         services.AddScoped<IProductRepository, ProductRepository>();
 
-        // Services
-        services.AddScoped<ICategoryService, CategoryService>();
-        services.AddScoped<ISubcategoryService, SubcategoryService>();
-        services.AddScoped<IProductService, ProductService>();
-
         // AutoMapper and MediatR
         services.AddMediatR(Assembly.GetExecutingAssembly());
         services.AddMediatR(typeof(CreateCategoryCommandHandler).Assembly);
         services.AddTransient<IRequestHandler<CreateProductCommand, CreateProductResponse>, CreateProductCommandHandler>();
+        services.AddTransient<IRequestHandler<UpdateProductCommand, UpdateProductResponse>, UpdateProductCommandHandler>();
         services.AddTransient<IRequestHandler<CreateCategoryCommand, CreateCategoryResponse>, CreateCategoryCommandHandler>();
         services.AddTransient<IRequestHandler<UpdateCategoryCommand, UpdateCategoryResponse>, UpdateCategoryCommandHandler>();
         services.AddTransient<IRequestHandler<DeleteCategoryCommand, DeleteCategoryResponse>, DeleteCategoryCommandHandler>();
@@ -60,7 +56,8 @@ public static class ServiceConfiguration
         services.AddTransient<IRequestHandler<GetCategoryByNameQuery, ReadCategoryDTO>, GetCategoryByNameQueryHandler>();
         services.AddScoped<IRequestHandler<CreateSubcategoryCommand, CreateSubcategoryResponse>, CreateSubcategoryCommandHandler>();
         services.AddTransient<IRequestHandler<GetCategoryByIdQuery, ReadCategoryDTO>, GetCategoryByIdQueryHandler>();
+        services.AddTransient<IRequestHandler<GetAllProductsQuery, List<ReadProductDTO>>, GetAllProductsQueryHandler>();
+        services.AddTransient<IRequestHandler<GetProductByIdQuery, ReadProductDTO>, GetProductByIdQueryHandler>();
         services.AddAutoMapper(typeof(CategoryMappingProfile), typeof(SubcategoryMappingProfile), typeof(ProductMappingProfile));
-
     }
 }

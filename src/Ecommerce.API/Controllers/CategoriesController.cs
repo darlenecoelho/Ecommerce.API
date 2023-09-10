@@ -15,13 +15,11 @@ namespace Ecommerce.API.Controllers;
 [Route("api/categories")]
 public class CategoryController : ControllerBase
 {
-    private readonly IMapper _mapper;
     private readonly IMediator _mediator;
 
-    public CategoryController(IMapper mapper, IMediator mediator)
+    public CategoryController(IMediator mediator)
     {
         _mediator = mediator;
-        _mapper = mapper;
     }
 
     /// <summary>

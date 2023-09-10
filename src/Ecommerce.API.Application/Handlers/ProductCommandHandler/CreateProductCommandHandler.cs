@@ -1,5 +1,5 @@
-﻿using Ecommerce.API.Application.Commands.Product;
-using Ecommerce.API.Application.Queries.Subcategory;
+﻿using AutoMapper;
+using Ecommerce.API.Application.Commands.Product;
 using Ecommerce.API.Application.Responses.Product;
 using Ecommerce.API.Domain.Entities;
 using Ecommerce.API.Domain.Repositories.Interfaces;
@@ -11,14 +11,23 @@ namespace Ecommerce.API.Application.Handlers.ProductCommandHandler;
 public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand, CreateProductResponse>
 {
     private readonly IProductRepository _productRepository;
+    private readonly IMapper _mapper;
     private readonly ILogger<CreateProductCommandHandler> _logger;
-    private readonly IMediator _mediator;
+    private readonly ICategoryRepository _categoryRepository;
+    private readonly ISubcategoryRepository _subcategoryRepository;
 
-    public CreateProductCommandHandler(IProductRepository productRepository, ILogger<CreateProductCommandHandler> logger, IMediator mediator)
+    public CreateProductCommandHandler(
+        IProductRepository productRepository,
+        IMapper mapper,
+        ILogger<CreateProductCommandHandler> logger,
+        ICategoryRepository categoryRepository,
+        ISubcategoryRepository subcategoryRepository)
     {
         _productRepository = productRepository;
+        _mapper = mapper;
         _logger = logger;
-        _mediator = mediator;
+        _categoryRepository = categoryRepository;
+        _subcategoryRepository = subcategoryRepository;
     }
 
     public async Task<CreateProductResponse> Handle(CreateProductCommand request, CancellationToken cancellationToken)
@@ -31,11 +40,11 @@ public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand,
                 _logger.LogError("O produto já foi cadastrado. Informe um nome diferente. Product Name: {productName}", request.Name);
                 return new CreateProductResponse
                 {
-                    Message = "O produto já foi cadastrado. Informe um nome diferente."
+                    Message = "O produto já existe. Informe um nome diferente."
                 };
             }
 
-            var category = await _mediator.Send(new GetSubcategoryByIdQuery { Id = request.CategoryId });
+            var category = await _categoryRepository.GetCategoryByIdAsync(request.CategoryId);
             if (category == null || !category.Status)
             {
                 _logger.LogError("Não é possível cadastrar um produto em uma categoria inativa. Category ID: {categoryId}", request.CategoryId);
@@ -45,7 +54,7 @@ public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand,
                 };
             }
 
-            var subcategory = await _mediator.Send(new GetSubcategoryByIdQuery { Id = request.SubcategoryId });
+            var subcategory = await _subcategoryRepository.GetSubcategoryByIdAsync(request.SubcategoryId);
             if (subcategory == null || !subcategory.Status)
             {
                 _logger.LogError("Não é possível cadastrar um produto em uma subcategoria inativa. Subcategory ID: {subcategoryId}", request.SubcategoryId);
@@ -68,14 +77,13 @@ public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand,
                 LastUpdate = DateTime.UtcNow
             };
 
-            await _productRepository.AddProductAsync(newProduct);
+            var createdProduct = await _productRepository.AddProductAsync(newProduct);
 
-            _logger.LogInformation($"Produto '{newProduct.Name}' criado com sucesso.");
+            _logger.LogInformation($"Produto '{createdProduct.Name}' criado com sucesso.");
 
             return new CreateProductResponse
             {
-                ProductId = newProduct.Id,
-                Message = $"Produto '{newProduct.Name}' criado com sucesso."
+                Message = "Produto criado com sucesso."
             };
         }
         catch (Exception ex)
@@ -89,4 +97,3 @@ public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand,
         }
     }
 }
-

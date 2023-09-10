@@ -1,6 +1,6 @@
 ﻿namespace Ecommerce.API.Application.Responses.Product;
 
-public class CreateProductResponse
+public class DeleteProductResponse
 {
     public string Message { get; set; }
 }

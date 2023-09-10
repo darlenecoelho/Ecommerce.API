@@ -1,6 +1,5 @@
 ﻿using Ecommerce.API.Application.Commands.Subcategory;
 using Ecommerce.API.Application.DTOs.Subcategory;
-using Ecommerce.API.Application.Interfaces;
 using Ecommerce.API.Application.Queries.Subcategory;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -11,13 +10,11 @@ namespace Ecommerce.API.Controllers
     [Route("api/subcategories")]
     public class SubcategoryController : ControllerBase
     {
-        private readonly ISubcategoryService _subcategoryService;
         private readonly IMediator _mediator;
 
-        public SubcategoryController(ISubcategoryService subcategoryService, IMediator mediator)
+        public SubcategoryController(IMediator mediator)
         {
             _mediator = mediator;
-            _subcategoryService = subcategoryService;
         }
 
         /// <summary>
@@ -123,7 +120,7 @@ namespace Ecommerce.API.Controllers
         {
             try
             {
-                await _subcategoryService.DeleteSubcategoryAsync(id);
+            //    await _subcategoryService.DeleteSubcategoryAsync(id);
                 return NoContent();
             }
             catch (Exception ex)

@@ -13,8 +13,8 @@ public class ProductMappingProfile : Profile
             .ReverseMap();
 
         CreateMap<CreateProductDTO, Product>()
-            .ForMember(dest => dest.CategoryId, opt => opt.MapFrom(src => src.CategoryId))
-            .ForMember(dest => dest.SubcategoryId, opt => opt.MapFrom(src => src.SubcategoryId));
+           .ForMember(dest => dest.CategoryId, opt => opt.MapFrom(src => src.CategoryId))
+           .ReverseMap();
 
         CreateMap<UpdateProductDTO, Product>().ReverseMap();
     }

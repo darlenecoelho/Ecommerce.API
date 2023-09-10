@@ -12,8 +12,10 @@ public class CategoryMappingProfile : Profile
         CreateMap<Category, ReadCategoryDTO>()
         .ForMember(dest => dest.Subcategories, opt => opt.MapFrom(src => src.Subcategories))
         .ReverseMap();
-        CreateMap<CreateCategoryDTO, Category>();
-        CreateMap<UpdateCategoryDTO, Category>();
+        CreateMap<CreateCategoryDTO, Category>()
+            .ReverseMap();
+        CreateMap<UpdateCategoryDTO, Category>()
+            .ReverseMap();
         CreateMap<Subcategory, ReadSubcategoryDTO>()
             .ReverseMap();
         CreateMap<CreateSubcategoryDTO, Subcategory>()
