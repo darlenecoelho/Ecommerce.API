@@ -10,14 +10,15 @@ public class CategoryMappingProfile : Profile
     public CategoryMappingProfile()
     {
         CreateMap<Category, ReadCategoryDTO>()
-            .ForMember(dest => dest.Subcategories, opt => opt.MapFrom(src => src.Subcategories));
-
-        CreateMap<CreateCategoryDTO, Category>();
-        CreateMap<UpdateCategoryDTO, Category>();
-
+        .ForMember(dest => dest.Subcategories, opt => opt.MapFrom(src => src.Subcategories))
+        .ReverseMap();
+        CreateMap<CreateCategoryDTO, Category>()
+            .ReverseMap();
+        CreateMap<UpdateCategoryDTO, Category>()
+            .ReverseMap();
         CreateMap<Subcategory, ReadSubcategoryDTO>()
-            .ForMember(dest => dest.Products, opt => opt.Ignore());
-
-        CreateMap<CreateSubcategoryDTO, Subcategory>();
+            .ReverseMap();
+        CreateMap<CreateSubcategoryDTO, Subcategory>()
+            .ReverseMap();
     }
 }

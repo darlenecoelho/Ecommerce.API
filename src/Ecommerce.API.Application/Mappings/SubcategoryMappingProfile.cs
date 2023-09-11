@@ -8,9 +8,10 @@ public class SubcategoryMappingProfile : Profile
     public SubcategoryMappingProfile()
     {
         CreateMap<Subcategory, ReadSubcategoryDTO>()
-            .ForMember(dest => dest.Products, opt => opt.MapFrom(src => src.Products));
-
-        CreateMap<CreateSubcategoryDTO, Subcategory>();
-        CreateMap<UpdateSubcategoryDTO, Subcategory>();
+          .ReverseMap();
+        CreateMap<CreateSubcategoryDTO, Subcategory>()
+            .ReverseMap();
+        CreateMap<UpdateSubcategoryDTO, Subcategory>()
+            .ReverseMap();
     }
 }

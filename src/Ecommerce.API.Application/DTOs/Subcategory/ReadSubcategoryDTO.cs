@@ -1,7 +1,4 @@
-﻿using Ecommerce.API.Application.DTOs.Category;
-using Ecommerce.API.Application.DTOs.Product;
-
-namespace Ecommerce.API.Application.DTOs.Subcategory;
+﻿namespace Ecommerce.API.Application.DTOs.Subcategory;
 public class ReadSubcategoryDTO
 {
     public int Id { get; set; }
@@ -10,6 +7,5 @@ public class ReadSubcategoryDTO
     public DateTime LastUpdate { get; set; }
     public bool Status { get; set; }
     public int CategoryId { get; set; }
-    public IList<ReadProductDTO> Products { get; set; } = new List<ReadProductDTO>();
 
 }

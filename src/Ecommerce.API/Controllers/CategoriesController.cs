@@ -1,119 +1,135 @@
 ﻿using AutoMapper;
+using Ecommerce.API.Application.Commands.Category;
 using Ecommerce.API.Application.DTOs.Category;
-using Ecommerce.API.Application.Interfaces;
+using Ecommerce.API.Application.Queries.Category;
+using Ecommerce.API.Application.Responses.Category;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Ecommerce.API.Controllers
+namespace Ecommerce.API.Controllers;
+
+/// <summary>
+/// Controlador para operações relacionadas a categorias.
+/// </summary>
+[ApiController]
+[Route("api/categories")]
+public class CategoryController : ControllerBase
 {
-    [ApiController]
-    [Route("api/categories")]
-    public class CategoryController : ControllerBase
+    private readonly IMediator _mediator;
+
+    public CategoryController(IMediator mediator)
     {
-        private readonly IMapper _mapper;
-        private readonly ICategoryService _categoryService;
+        _mediator = mediator;
+    }
 
-        public CategoryController(IMapper mapper, ICategoryService categoryService)
+    /// <summary>
+    /// Lista todas as categorias.
+    /// </summary>
+    [HttpGet]
+    [ProducesResponseType(typeof(List<ReadCategoryDTO>), 200)]
+    public async Task<ActionResult<List<ReadCategoryDTO>>> GetAllCategoriesAsync()
+    {
+        var query = new GetAllCategoriesQuery();
+        var categories = await _mediator.Send(query);
+        return Ok(categories);
+    }
+
+    /// <summary>
+    /// Obtém uma categoria pelo seu ID.
+    /// </summary>
+    /// <param name="id">O ID da categoria.</param>
+    [HttpGet("{id}", Name = nameof(GetCategoryById))]
+    [ProducesResponseType(typeof(ReadCategoryDTO), 200)]
+    [ProducesResponseType(typeof(string), 404)]
+    public async Task<ActionResult<ReadCategoryDTO>> GetCategoryById(int id)
+    {
+        try
         {
-            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-            _categoryService = categoryService ?? throw new ArgumentNullException(nameof(categoryService));
+            var category = await _mediator.Send(new GetCategoryByIdQuery { Id = id});
+
+            return Ok(category);
         }
-
-        /// <summary>
-        /// Lista todas as categorias.
-        /// </summary>
-        [HttpGet]
-        [ProducesResponseType(typeof(List<ReadCategoryDTO>), 200)]
-        public async Task<ActionResult<List<ReadCategoryDTO>>> GetAllCategoriesAsync()
+        catch (Exception)
         {
-            var categories = await _categoryService.GetAllCategoriesAsync();
-            return Ok(categories);
+            return NotFound("Categoria não encontrada.");
         }
+    }
 
-        /// <summary>
-        /// Obtém uma categoria pelo seu ID.
-        /// </summary>
-        /// <param name="id">O ID da categoria.</param>
-        [HttpGet("{id}", Name = nameof(GetCategoryByIdAsync))]
-        [ProducesResponseType(typeof(ReadCategoryDTO), 200)]
-        [ProducesResponseType(typeof(string), 404)]
-        public async Task<ActionResult<ReadCategoryDTO>> GetCategoryByIdAsync(int id)
+    /// <summary>
+    /// Cria uma nova categoria.
+    /// </summary>
+    /// <param name="command">Os dados da categoria a ser criada.</param>
+    [HttpPost]
+    [ProducesResponseType(typeof(CreateCategoryResponse), 200)]
+    [ProducesResponseType(typeof(string), 400)]
+    public async Task<IActionResult> CreateCategoryAsync([FromBody] CreateCategoryCommand command)
+    {
+        var response = await _mediator.Send(command);
+
+        if (!string.IsNullOrEmpty(response.Message))
         {
-            try
-            {
-                var category = await _categoryService.GetCategoryByIdAsync(id);
-                return Ok(category);
-            }
-            catch (Exception)
+            return Ok(response);
+        }
+        else
+        {
+            return BadRequest(response);
+        }
+    }
+
+    /// <summary>
+    /// Atualiza uma categoria.
+    /// </summary>
+    /// <param name="id">O ID da categoria a ser atualizada.</param>
+    [HttpPut("{id}")]
+    [ProducesResponseType(typeof(ReadCategoryDTO), 200)]
+    [ProducesResponseType(typeof(string), 400)]
+    [ProducesResponseType(typeof(string), 404)]
+    public async Task<IActionResult> UpdateCategory(int id, [FromBody] UpdateCategoryCommand command)
+    {
+        try
+        {
+            command.Id = id;
+            var response = await _mediator.Send(command);
+
+            if (response == null)
             {
                 return NotFound("Categoria não encontrada.");
             }
+
+            return Ok(response);
         }
-
-        /// <summary>
-        /// Cria uma nova categoria.
-        /// </summary>
-        /// <param name="category">A categoria a ser criada.</param>
-        [HttpPost]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(typeof(string), 400)]
-        public async Task<IActionResult> CreateCategoryAsync([FromBody] CreateCategoryDTO category)
+        catch (Exception)
         {
-            try
-            {
-                await _categoryService.CreateCategoryAsync(category);
-                return Ok("Categoria cadastrada com sucesso.");
-            }
-            catch (InvalidOperationException)
-            {
-                return BadRequest("Categoria já cadastrada. Por favor, altere o nome da categoria.");
-            }
+            return StatusCode(500, "Erro interno ao atualizar a categoria.");
         }
+    }
 
-        /// <summary>
-        /// Atualiza uma categoria.
-        /// </summary>
-        /// <param name="id">O ID da categoria a ser atualizada.</param>
-        /// <param name="category">Os dados atualizados da categoria.</param>
-        [HttpPut("{id}")]
-        [ProducesResponseType(typeof(ReadCategoryDTO), 200)]
-        [ProducesResponseType(typeof(string), 400)]
-        [ProducesResponseType(typeof(string), 404)]
-        public async Task<ActionResult<ReadCategoryDTO>> UpdateCategoryAsync(int id, [FromBody] UpdateCategoryDTO category)
+    /// <summary>
+    /// Exclui uma categoria pelo seu ID.
+    /// </summary>
+    /// <param name="id">O ID da categoria a ser excluída.</param>
+    [HttpDelete("{id}")]
+    [ProducesResponseType(204)]
+    [ProducesResponseType(typeof(string), 404)]
+    public async Task<IActionResult> DeleteCategory(int id)
+    {
+        try
         {
-            try
-            {
-                if (id != category.Id)
-                {
-                    return BadRequest("O ID da categoria na URL deve corresponder ao ID fornecido no corpo da requisição.");
-                }
+            var command = new DeleteCategoryCommand { Id = id };
+            var result = await _mediator.Send(command);
 
-                var updatedCategory = await _categoryService.UpdateCategoryAsync(category);
-                return Ok("Categoria atualizada com sucesso.");
-            }
-            catch (Exception)
+            if (result.Success)
             {
-                return NotFound("Categoria não encontrada.");
+                return NoContent();
+            }
+            else
+            {
+                return NotFound(result.Message);
             }
         }
-
-        /// <summary>
-        /// Exclui uma categoria pelo seu ID.
-        /// </summary>
-        /// <param name="id">O ID da categoria a ser excluída.</param>
-        [HttpDelete("{id}")]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(typeof(string), 404)]
-        public async Task<IActionResult> DeleteCategoryAsync(int id)
+        catch (Exception)
         {
-            try
-            {
-                await _categoryService.DeleteCategoryAsync(id);
-                return Ok("Categoria deletada com sucesso.");
-            }
-            catch (Exception)
-            {
-                return NotFound("Categoria não encontrada.");
-            }
+            return StatusCode(500, "Erro interno ao excluir a categoria.");
         }
     }
 }

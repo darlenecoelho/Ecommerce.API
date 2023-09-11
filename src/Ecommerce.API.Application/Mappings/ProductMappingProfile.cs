@@ -9,11 +9,12 @@ public class ProductMappingProfile : Profile
     {
         CreateMap<Product, ReadProductDTO>()
             .ForMember(dest => dest.Category, opt => opt.MapFrom(src => src.Category))
-            .ForMember(dest => dest.Subcategory, opt => opt.MapFrom(src => src.Subcategory));
+            .ForMember(dest => dest.Subcategory, opt => opt.MapFrom(src => src.Subcategory))
+            .ReverseMap();
 
         CreateMap<CreateProductDTO, Product>()
-            .ForMember(dest => dest.CategoryId, opt => opt.MapFrom(src => src.CategoryId))
-            .ForMember(dest => dest.SubcategoryId, opt => opt.MapFrom(src => src.SubcategoryId));
+           .ForMember(dest => dest.CategoryId, opt => opt.MapFrom(src => src.CategoryId))
+           .ReverseMap();
 
         CreateMap<UpdateProductDTO, Product>().ReverseMap();
     }
