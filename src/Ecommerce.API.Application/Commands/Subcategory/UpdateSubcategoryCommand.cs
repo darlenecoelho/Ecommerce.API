@@ -9,5 +9,5 @@ public class UpdateSubcategoryCommand : IRequest<UpdateSubcategoryResponse>
     public string? Name { get; set; }
     public bool Status { get; set; }
     public int CategoryId { get; set; }
-    public DateTime LastUpdate { get; set; }
+
 }

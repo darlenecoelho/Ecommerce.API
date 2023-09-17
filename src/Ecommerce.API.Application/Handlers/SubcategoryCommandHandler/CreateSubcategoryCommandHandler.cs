@@ -39,8 +39,8 @@ public class CreateSubcategoryCommandHandler : IRequestHandler<CreateSubcategory
                 Name = request.Name,
                 Status = request.Status,
                 CategoryId = request.CategoryId,
-                DateRegister = request.DateRegister
-            };
+                DateRegister = DateTime.Now
+        };
 
             await _subcategoryRepository.AddSubcategoryAsync(newSubcategory);
             _logger.LogInformation($"Subcategoria '{newSubcategory.Name}' criada com sucesso.");

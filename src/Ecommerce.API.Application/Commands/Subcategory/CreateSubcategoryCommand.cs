@@ -8,5 +8,4 @@ public class CreateSubcategoryCommand : IRequest<CreateSubcategoryResponse>
     public string? Name { get; set; }
     public bool Status { get; set; }
     public int CategoryId { get; set; }
-    public DateTime DateRegister { get; set; }
 }

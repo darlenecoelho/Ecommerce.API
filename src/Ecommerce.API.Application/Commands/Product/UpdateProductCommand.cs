@@ -13,5 +13,4 @@ public class UpdateProductCommand : IRequest<UpdateProductResponse>
     public bool Status { get; set; }
     public int CategoryId { get; set; }
     public int SubcategoryId { get; set; }
-    public DateTime LastUpdate { get; set; }
 }

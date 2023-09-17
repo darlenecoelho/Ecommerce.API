@@ -63,15 +63,24 @@ public class CategoryController : ControllerBase
     [ProducesResponseType(typeof(string), 400)]
     public async Task<IActionResult> CreateCategoryAsync([FromBody] CreateCategoryCommand command)
     {
-        var response = await _mediator.Send(command);
+        {
+            try
+            {
+                var response = await _mediator.Send(command);
 
-        if (!string.IsNullOrEmpty(response.Message))
-        {
-            return Ok(response);
-        }
-        else
-        {
-            return BadRequest(response);
+                if (!string.IsNullOrEmpty(response.Message))
+                {
+                    return Ok(response);
+                }
+                else
+                {
+                    return BadRequest("Erro ao criar a categotegoria.");
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Ocorreu um erro interno: {ex.Message}");
+            }
         }
     }
 

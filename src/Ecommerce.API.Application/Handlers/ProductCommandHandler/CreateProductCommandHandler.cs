@@ -73,8 +73,8 @@ public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand,
                 CategoryId = request.CategoryId,
                 SubcategoryId = request.SubcategoryId,
                 Status = request.Status,
-                DateRegister = request.DateRegister,
-                LastUpdate = DateTime.UtcNow
+                DateRegister = DateTime.Now,
+            LastUpdate = DateTime.UtcNow
             };
 
             var createdProduct = await _productRepository.AddProductAsync(newProduct);

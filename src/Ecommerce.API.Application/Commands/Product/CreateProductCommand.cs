@@ -12,7 +12,6 @@ public class CreateProductCommand : IRequest<CreateProductResponse>
     public int CategoryId { get; set; }
     public int SubcategoryId { get; set; }
     public bool Status { get; set; }
-    public DateTime DateRegister { get; set; }
-    public DateTime LastUpdate { get; set; }
+   
 }
 

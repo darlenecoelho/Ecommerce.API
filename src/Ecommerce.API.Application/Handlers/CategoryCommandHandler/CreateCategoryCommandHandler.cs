@@ -1,4 +1,5 @@
-﻿using Ecommerce.API.Application.Commands.Category;
+﻿using AutoMapper;
+using Ecommerce.API.Application.Commands.Category;
 using Ecommerce.API.Application.Responses.Category;
 using Ecommerce.API.Domain.Entities;
 using Ecommerce.API.Domain.Repositories.Interfaces;
@@ -10,11 +11,16 @@ namespace Ecommerce.API.Application.Handlers.CategoryCommandHandler;
 public class CreateCategoryCommandHandler : IRequestHandler<CreateCategoryCommand, CreateCategoryResponse>
 {
     private readonly ICategoryRepository _categoryRepository;
+    private readonly IMapper _mapper;
     private readonly ILogger<CreateCategoryCommandHandler> _logger;
 
-    public CreateCategoryCommandHandler(ICategoryRepository categoryRepository, ILogger<CreateCategoryCommandHandler> logger)
+    public CreateCategoryCommandHandler(
+        ICategoryRepository categoryRepository,
+        IMapper mapper,
+        ILogger<CreateCategoryCommandHandler> logger)
     {
         _categoryRepository = categoryRepository;
+        _mapper = mapper;
         _logger = logger;
     }
 
@@ -22,11 +28,21 @@ public class CreateCategoryCommandHandler : IRequestHandler<CreateCategoryComman
     {
         try
         {
+            var existingCategory = await _categoryRepository.GetCategoryByNameAsync(request.Name);
+            if (existingCategory != null)
+            {
+                _logger.LogError("Uma categoria com o mesmo nome já existe: {categoryName}", request.Name);
+                return new CreateCategoryResponse
+                {
+                    Message = "Uma categoria com o mesmo nome já existe. Escolha um nome diferente."
+                };
+            }
+
             var newCategory = new Category
             {
                 Name = request.Name,
                 Status = request.Status,
-                DateRegister = request.DateRegister
+                DateRegister = DateTime.Now 
             };
 
             await _categoryRepository.AddCategoryAsync(newCategory);

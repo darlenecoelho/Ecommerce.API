@@ -34,6 +34,7 @@ public class UpdateCategoryCommandHandler : IRequestHandler<UpdateCategoryComman
 
             existingCategory.Name = request.Name;
             existingCategory.Status = request.Status;
+            existingCategory.LastUpdate = DateTime.Now;
 
             await _categoryRepository.UpdateCategoryAsync(existingCategory);
             _logger.LogInformation($"Categoria com ID {existingCategory.Id} atualizada com sucesso.");
