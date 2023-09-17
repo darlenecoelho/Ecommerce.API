@@ -9,7 +9,6 @@ jobs:
   build_and_deploy:
     name: Build and Deploy
     runs-on: windows-latest 
-
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
@@ -17,8 +16,7 @@ jobs:
       - name: Setup .NET Core
         uses: actions/setup-dotnet@v2
         with:
-          dotnet-version: '7.0' 
-
+          dotnet-version: '7.0'
       - name: Restore Dependencies
         run: dotnet restore C:\Users\coelh\source\repos\Ecommerce.API\src\Ecommerce.API\Ecommerce.API.sln
 
