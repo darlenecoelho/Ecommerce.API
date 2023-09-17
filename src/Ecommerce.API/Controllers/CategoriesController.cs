@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using Ecommerce.API.Application.Commands.Category;
+﻿using Ecommerce.API.Application.Commands.Category;
 using Ecommerce.API.Application.DTOs.Category;
 using Ecommerce.API.Application.Queries.Category;
 using Ecommerce.API.Application.Responses.Category;
@@ -45,7 +44,7 @@ public class CategoryController : ControllerBase
     {
         try
         {
-            var category = await _mediator.Send(new GetCategoryByIdQuery { Id = id});
+            var category = await _mediator.Send(new GetCategoryByIdQuery { Id = id });
 
             return Ok(category);
         }
@@ -79,7 +78,7 @@ public class CategoryController : ControllerBase
     /// <summary>
     /// Atualiza uma categoria.
     /// </summary>
-    /// <param name="id">O ID da categoria a ser atualizada.</param>
+    /// <param name="command">O ID da categoria a ser atualizada.</param>
     [HttpPut("{id}")]
     [ProducesResponseType(typeof(ReadCategoryDTO), 200)]
     [ProducesResponseType(typeof(string), 400)]
