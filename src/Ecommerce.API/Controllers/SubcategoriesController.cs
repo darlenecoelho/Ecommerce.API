@@ -120,7 +120,7 @@ namespace Ecommerce.API.Controllers
         {
             try
             {
-                //    await _subcategoryService.DeleteSubcategoryAsync(id);
+                //  ajustar esse metodo  await _subcategoryService.DeleteSubcategoryAsync(id);
                 return NoContent();
             }
             catch (Exception ex)
